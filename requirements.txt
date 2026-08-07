@@ -1,0 +1,23 @@
+# core AI LIBRARIES
+openai
+# ENVIRONMENT VARIABLES
+python-dotenv
+# HTTP REQUESTS
+requests
+# SPEECH RECOGNITION
+SpeechRecognition
+Sounddevice
+# web Automation
+selenium 
+# Browser Driver Manager
+webdriver-manager
+# web Scraping
+beautifulsoup4
+# data handling
+pandas
+# PDF READING
+PyPDF2
+# IMAGE processing
+Pillow
+# COMPUTER VISION
+opencv-python
