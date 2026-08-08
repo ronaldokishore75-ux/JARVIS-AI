@@ -2,7 +2,7 @@ import sounddevice as sd
 from scipy.io.wavfile import write
 import whisper
 
-model = whisper.load_model("base")
+model = whisper.load_model("base")  # Load the small model for faster processing
 
 duration = 5
 sample_rate = 48000

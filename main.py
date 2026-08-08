@@ -4,17 +4,19 @@ from voice import speak
 import string
 
 print("=" * 50)
-print("        JARVIS AI")
+print("           JARVIS AI")
 print("=" * 50)
 
-name = "kishore"
+name = "Kishore"
 
-speak(f"\nWelcome, {name}")
+speak(f"Welcome, {name}")
 
 while True:
 
+    # Wait for wake word
     print("🎤 Waiting for wake word...")
     wake_word = listen()
+
     wake_word = wake_word.lower().translate(
         str.maketrans("", "", string.punctuation)
     )
@@ -32,12 +34,16 @@ while True:
 
     speak("Yes?")
 
+    # Listen for command
     command = listen()
-    print(f"You: {command}")
+    print("Command:", command)
 
     if "bye" in command.lower():
         speak("Goodbye!")
         break
 
+    # Process command
     response = jarvis_response(command)
+
+    print("JARVIS:", response)
     speak(response)
