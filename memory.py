@@ -8,8 +8,11 @@ def load_memory():
     if not os.path.exists(MEMORY_FILE):
         return {}
 
-    with open(MEMORY_FILE, "r") as file:
-        return json.load(file)
+    try:
+        with open(MEMORY_FILE, "r") as file:
+            return json.load(file)
+    except:
+        return {}
 
 
 def save_memory(memory):

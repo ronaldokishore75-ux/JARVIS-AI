@@ -1,14 +1,23 @@
-import google.generativeai as genai
+from google import genai
 from config import GEMINI_API_KEY
 
-genai.configure(api_key=GEMINI_API_KEY)
+client = genai.Client(api_key=GEMINI_API_KEY)
 
-model = genai.GenerativeModel("models/gemini-3.5-flash")
+conversation_history = []
 
 
 def ask_ai(prompt):
-    response = model.generate_content(
-        f"""
+    global conversation_history
+
+    conversation_history.append(
+        f"User: {prompt}"
+    )
+
+    recent_history = conversation_history[-10:]
+
+    history = "\n".join(recent_history)
+
+    full_prompt = f"""
 You are Jarvis, my personal AI assistant.
 
 Rules:
@@ -16,9 +25,25 @@ Rules:
 - Be concise.
 - Answer naturally.
 - If someone asks a programming question, explain clearly.
+- Use the previous conversation to understand follow-up questions.
+- Remember what the user was talking about.
 
-User: {prompt}
+Conversation:
+{history}
+
+User's latest message:
+{prompt}
 """
+
+    response = client.models.generate_content(
+        model="gemini-3.5-flash",
+        contents=full_prompt
     )
 
-    return response.text
+    answer = response.text
+
+    conversation_history.append(
+        f"Jarvis: {answer}"
+    )
+
+    return answer

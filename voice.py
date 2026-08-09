@@ -9,8 +9,14 @@ def speak(text):
     engine.setProperty("rate", 170)
 
     voices = engine.getProperty("voices")
-    engine.setProperty("voice", voices[0].id)
+
+    if voices:
+        engine.setProperty("voice", voices[0].id)
 
     engine.say(text)
     engine.runAndWait()
     engine.stop()
+
+
+def stop_speaking():
+    pass

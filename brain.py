@@ -39,7 +39,32 @@ def jarvis_response(command):
     if "how are you" in command:
         return "I am doing great. Thanks for asking."
 
-    # Save your name
+    if 'my favorite color is' in command:
+        color = command.replace('my favorite color is', '').strip()
+        memory['favorite_color'] = color
+        save_memory(memory)
+        return f"Got it! I'll remember that your favorite color is {color}."
+
+    if 'where do i live' in command:
+        if 'location' in memory:
+            return f"You live in {memory['location']}."
+        else:
+            return "I don't know where you live yet."
+    
+    if 'i live in' in command:
+        city = command.replace('i live in', '').strip()
+        memory['location'] = city
+        save_memory(memory)
+        return f"Got it! I'll remember that you live in {city}."
+
+    if 'what is my favorite color' in command:
+        if 'favorite_color' in memory:
+            return f"Your favorite color is {memory['favorite_color']}."
+        else:
+            return "I don't know your favorite color yet."
+
+    
+
     if "my name is" in command:
         name = command.replace("my name is", "").strip()
         memory["name"] = name
@@ -70,3 +95,4 @@ def jarvis_response(command):
         return "Why don't scientists trust atoms? Because they make up everything!"
 
     return ask_ai(command)
+

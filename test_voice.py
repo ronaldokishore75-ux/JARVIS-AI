@@ -1,5 +1,10 @@
 from voice import speak
 
-speak("Hello! I am Jarvis. Nice to meet you my bro! .")
+speak(
+    "Hello Kishore. I am Jarvis. "
+    "I am now testing the interruption system. "
+    "You can say stop while I am speaking. "
+    "If you say something else, I should continue speaking."
+)
 
-speak("I am your personal AI assistant. I can help you with various tasks and answer your questions.")
+print("✅ Test complete.")

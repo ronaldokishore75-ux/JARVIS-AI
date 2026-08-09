@@ -2,11 +2,11 @@ import sounddevice as sd
 from scipy.io.wavfile import write
 import whisper
 
-model = whisper.load_model("base")  # Load the small model for faster processing
+model = whisper.load_model("base")
 
 duration = 5
 sample_rate = 48000
-device = 12     # Your microphone index
+device = 12
 
 
 def listen():
@@ -28,4 +28,4 @@ def listen():
 
     result = model.transcribe("voice.wav")
 
-    return result["text"]
+    return result["text"].strip()
