@@ -3,6 +3,7 @@ from whisper_ai import listen
 from voice import speak, stop_speaking
 import string
 
+
 print("=" * 50)
 print("           JARVIS AI")
 print("=" * 50)
@@ -12,7 +13,10 @@ name = "Kishore"
 speak(f"Welcome, {name}")
 
 
-# Wake phrases
+# =========================================================
+# WAKE WORDS
+# =========================================================
+
 WAKE_WORDS = [
     "hey",
     "hey jarvis",
@@ -24,44 +28,89 @@ WAKE_WORDS = [
 ]
 
 
+# =========================================================
+# NORMALIZE VOICE INPUT
+# =========================================================
+
+def clean_command(text):
+
+    return text.lower().translate(
+        str.maketrans("", "", string.punctuation)
+    ).strip()
+
+
+# =========================================================
+# MAIN LOOP
+# =========================================================
+
 while True:
-
-
 
     print("🎤 Waiting for wake word...")
 
     wake_word = listen()
 
-    wake_word = wake_word.lower().translate(
-        str.maketrans("", "", string.punctuation)
-    )
+    wake_word = clean_command(wake_word)
 
     print("Wake word:", wake_word)
 
-    # Completely exit
+
+    # =====================================================
+    # EXIT FROM WAKE MODE
+    # =====================================================
+
     if "bye" in wake_word:
+
         speak("Goodbye!")
+
         break
 
-    # Check wake words
-    if not any(word in wake_word for word in WAKE_WORDS):
+
+    # =====================================================
+    # CHECK WAKE WORD
+    # =====================================================
+
+    if not any(
+        word in wake_word
+        for word in WAKE_WORDS
+    ):
+
         continue
 
 
+    # =====================================================
+    # WAKE RESPONSE
+    # =====================================================
 
+    if (
+        "okay jarvis" in wake_word
+        or "ok jarvis" in wake_word
+    ):
 
-    if "okay jarvis" in wake_word or "ok jarvis" in wake_word:
         speak("Okay! How can I help you?")
 
-    elif "wake up" in wake_word or wake_word == "wake":
-        speak("I am awake and ready to assist you.")
+    elif (
+        "wake up" in wake_word
+        or wake_word == "wake"
+    ):
+
+        speak(
+            "I am awake and ready to assist you."
+        )
 
     elif "hey jarvis" in wake_word:
-        speak("Hey! How can I help you?")
+
+        speak(
+            "Hey! How can I help you?"
+        )
 
     else:
+
         speak("Yes?")
 
+
+    # =====================================================
+    # ACTIVE CONVERSATION
+    # =====================================================
 
     while True:
 
@@ -69,26 +118,83 @@ while True:
 
         command = listen()
 
-        command = command.lower().strip()
+        command = clean_command(command)
 
         print("You:", command)
 
 
-        # Go back to sleep
-        if "go to sleep" in command or "stop listening" in command:
+        # =================================================
+        # IGNORE EMPTY INPUT
+        # =================================================
+
+        if not command:
+
+            continue
+
+
+        # =================================================
+        # GO TO SLEEP
+        # =================================================
+
+        if (
+            "go to sleep" in command
+            or "stop listening" in command
+        ):
+
             speak("Okay, I'll wait for you.")
+
             break
 
 
-        # Completely exit
-        if "bye" in command:
+        # =================================================
+        # EXIT JARVIS
+        # =================================================
+
+        if command == "bye":
+
             speak("Goodbye!")
-            exit()
+
+            raise SystemExit
 
 
-        # Process command
+        # =================================================
+        # STOP SPEAKING
+        #
+        # IMPORTANT:
+        # Only exact stop commands are handled here.
+        # We do NOT use:
+        #
+        #     "stop" in command
+        #
+        # because that can interfere with other commands.
+        # =================================================
+
+        if command in [
+            "stop",
+            "stop talking",
+            "jarvis stop",
+            "stop speaking",
+            "be quiet",
+            "quiet",
+            "wait",
+        ]:
+
+            print("🛑 Stop command received.")
+
+            stop_speaking()
+
+            continue
+
+
+        # =================================================
+        # SEND EVERYTHING ELSE TO BRAIN
+        # =================================================
+
         response = jarvis_response(command)
 
-        print("JARVIS:", response)
+
+        # =================================================
+        # SPEAK RESPONSE
+        # =================================================
 
         speak(response)

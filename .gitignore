@@ -3,3 +3,18 @@ __pycache__/
 *.pyc
 voice.wav
 memory.json
+# Python cache
+__pycache__/
+*.pyc
+
+# Audio recordings
+*.wav
+
+# Local test files
+*_test.py
+test_*.py
+stop_test.py
+stop_check.wav
+
+# Local voice/device testing
+voice_list.py

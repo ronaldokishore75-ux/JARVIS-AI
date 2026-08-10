@@ -9,10 +9,7 @@ conversation_history = []
 def ask_ai(prompt):
     global conversation_history
 
-    conversation_history.append(
-        f"User: {prompt}"
-    )
-
+    # Build history BEFORE adding the current question
     recent_history = conversation_history[-10:]
 
     history = "\n".join(recent_history)
@@ -28,7 +25,7 @@ Rules:
 - Use the previous conversation to understand follow-up questions.
 - Remember what the user was talking about.
 
-Conversation:
+Previous conversation:
 {history}
 
 User's latest message:
@@ -36,11 +33,16 @@ User's latest message:
 """
 
     response = client.models.generate_content(
-        model="gemini-3.5-flash",
+        model="gemini-3.1-flash-lite",
         contents=full_prompt
     )
 
     answer = response.text
+
+    # Save both sides of the conversation
+    conversation_history.append(
+        f"User: {prompt}"
+    )
 
     conversation_history.append(
         f"Jarvis: {answer}"
