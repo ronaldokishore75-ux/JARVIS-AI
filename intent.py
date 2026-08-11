@@ -8,6 +8,88 @@ def detect_intent(command):
     # =========================================================
     # NOTHING FOUND
     # =========================================================
+
+
+    #==========================================================
+
+    #computer function
+
+    # =========================================================
+    # CPU USAGE
+    # =========================================================
+
+    cpu_patterns = [
+        r"what is my cpu usage",
+        r"what's my cpu usage",
+        r"how much cpu am i using",
+        r"check cpu usage",
+        r"check my cpu",
+        r"cpu usage",
+        ]
+    for pattern in cpu_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "cpu_usage", None
+
+
+    # =========================================================
+    # RAM USAGE
+    # =========================================================
+
+    ram_patterns = [
+       r"what is my ram usage",
+       r"what's my ram usage",
+       r"how much ram am i using",
+       r"check ram usage",
+       r"check my ram",
+       r"ram usage",
+       r"memory usage",
+       ]
+
+    for pattern in ram_patterns:
+        if re.fullmatch(pattern, command):
+            return "ram_usage", None
+
+
+    # =========================================================
+    # STORAGE
+    # =========================================================
+
+    storage_patterns = [
+        r"how much storage do i have",
+        r"check my storage",
+        r"check storage",
+        r"how much space do i have",
+        r"how much disk space do i have",
+        r"check disk space",
+        r"disk usage",
+        r"storage usage"
+        ]
+
+    for pattern in storage_patterns:
+        if re.fullmatch(pattern, command):
+
+            return "storage_usage", None
+
+
+    # =========================================================
+    # BATTERY
+    # =========================================================
+
+    battery_patterns = [
+       r"what is my battery level",
+       r"what's my battery level",
+       r"how much battery do i have",
+       r"check my battery",
+       r"check battery",
+       r"battery level",
+       r"battery",
+       ]
+
+    for pattern in battery_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "battery_level", None
     
     # =========================================================
     # VOLUME UP
@@ -76,6 +158,61 @@ def detect_intent(command):
         if re.fullmatch(pattern, command):
 
             return "unmute_volume", None
+
+
+    # =========================================================
+    # SET VOLUME
+    # =========================================================
+
+
+    volume_set_patterns = [
+        r"set\s+(?:the\s+|my\s+)?volume\s+to\s+(\d+)\s*(?:percent|%)?",
+        r"set\s+(?:the\s+|my\s+)?volume\s+(?:at|on)\s+(\d+)\s*(?:percent|%)?",
+        r"change\s+(?:the\s+|my\s+)?volume\s+to\s+(\d+)\s*(?:percent|%)?",
+        r"change\s+(?:the\s+|my\s+)?volume\s+(?:at|on)\s+(\d+)\s*(?:percent|%)?",
+        r"volume\s+(\d+)\s*(?:percent|%)?",
+        ]
+
+    for pattern in volume_set_patterns:
+
+        match = re.fullmatch(pattern, command)
+
+        if match:
+
+            percent = int(match.group(1))
+
+            # Keep volume between 0 and 100
+            
+            percent = max(0, min(percent, 100))
+
+            return "set_volume", percent
+
+
+    # =========================================================
+    # CURRENT VOLUME
+    # =========================================================
+
+    current_volume_patterns = [
+
+        r"what is (?:the\s+|my\s+)?current volume",
+        r"what's (?:the\s+|my\s+)?current volume",
+        r"what is (?:the\s+|my\s+)?current volume level",
+        r"what's (?:the\s+|my\s+)?current volume level",
+        r"what is (?:the\s+|my\s+)?volume",
+        r"what's (?:the\s+|my\s+)?volume",
+        r"what is (?:the\s+|my\s+)?volume level",
+        r"what's (?:the\s+|my\s+)?volume level",
+        r"check (?:the\s+|my\s+)?volume",
+        r"check (?:the\s+|my\s+)?volume level",
+        r"current volume",
+        r"current volume level",
+        ]
+
+    for pattern in current_volume_patterns:
+
+        if re.fullmatch(pattern, command):
+
+            return "get_current_volume", None
 
     # =========================================================
     # LOCK COMPUTER

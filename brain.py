@@ -30,6 +30,12 @@ from action import (
     volume_down,
     mute_volume,
     unmute_volume,
+    get_cpu_usage,
+    get_ram_usage,
+    get_storage_usage,
+    get_battery_level,
+    set_volume,
+    get_current_volume,
 )
 
 pending_action = None
@@ -127,6 +133,31 @@ def jarvis_response(command):
 
         return "Locking your computer."
 
+    #==========================================================
+    #COMPUTER FUNCTION
+    #===========================================================
+
+    elif intent == "cpu_usage":
+
+        return get_cpu_usage()
+
+
+    elif intent == "ram_usage":
+
+        return get_ram_usage()
+
+
+    elif intent == "storage_usage":
+
+        return get_storage_usage()
+
+
+    elif intent == "battery_level":
+
+        return get_battery_level()
+
+
+
     # =========================================================
     # VOLUME UP
     # =========================================================
@@ -166,6 +197,18 @@ def jarvis_response(command):
         unmute_volume()
 
         return "Unmuting volume."
+    #============================================================
+    # volume set
+    #============================================================
+
+    elif intent == "set_volume":
+
+        return set_volume(value)
+
+
+    elif intent == "get_current_volume":
+
+        return get_current_volume()
 
     # =========================================================
     # OPEN NOTEPAD

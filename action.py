@@ -3,6 +3,61 @@ import subprocess
 import os
 from urllib.parse import quote_plus
 from pycaw.pycaw import AudioUtilities
+import psutil
+
+
+
+
+# COMPUTER CONTROL FUNCTIONS
+
+def get_cpu_usage():
+
+    cpu = psutil.cpu_percent(interval=1)
+    return f"CPU usage is {cpu} percent."
+
+
+def get_ram_usage():
+    memory = psutil.virtual_memory()
+
+    used = memory.used / (1024 ** 3)
+    total = memory.total / (1024 ** 3)
+    percent = memory.percent
+
+    return (
+        f"RAM usage is {percent} percent. "
+        f"You are using {used:.1f} gigabytes "
+        f"out of {total:.1f} gigabytes."
+    )
+
+
+def get_storage_usage():
+
+    disk = psutil.disk_usage("C:\\")
+
+    used = disk.used / (1024 ** 3)
+    total = disk.total / (1024 ** 3)
+    free = disk.free / (1024 ** 3)
+
+    return (
+        f"Your C drive is {disk.percent} percent full. "
+        f"You have {free:.1f} gigabytes free "
+        f"out of {total:.1f} gigabytes."
+    )
+
+
+def get_battery_level():
+
+    battery = psutil.sensors_battery()
+
+    if battery is None:
+        return "I can't detect a battery on this computer."
+
+    percent = battery.percent
+
+    if battery.power_plugged:
+        return f"Battery is at {percent} percent and the computer is plugged in."
+
+    return f"Battery is at {percent} percent."
 
 
 # =========================================================
@@ -51,6 +106,33 @@ def unmute_volume():
     volume = get_volume_controller()
 
     volume.SetMute(0, None)
+
+
+def set_volume(percent):
+
+    volume = get_volume_controller()
+
+    percent = max(0, min(percent, 100))
+
+    level = percent / 100
+
+    volume.SetMasterVolumeLevelScalar(
+        level,
+        None
+    )
+
+    return f"Volume set to {percent} percent."
+
+
+def get_current_volume():
+
+    volume = get_volume_controller()
+
+    current = volume.GetMasterVolumeLevelScalar()
+
+    percent = round(current * 100)
+
+    return f"The current volume is {percent} percent."
 
 
 # =========================================================
