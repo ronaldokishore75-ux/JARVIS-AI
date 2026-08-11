@@ -26,12 +26,64 @@ from action import (
     close_calculator,
 )
 
+pending_action = None
 
 def jarvis_response(command):
 
+    global pending_action
+    
     command = command.lower().strip()
 
     memory = load_memory()
+
+    # =========================================================
+    # CONFIRMATION SYSTEM
+    # =========================================================
+
+    if pending_action is not None:
+
+        if command in [
+            "yes",
+            "yeah",
+            "yep",
+            "sure",
+            "okay",
+            "ok",
+            "do it",
+        ]:
+
+            action = pending_action
+
+            pending_action = None
+
+            if action == "close_notepad":
+                close_notepad()
+                return "Closing Notepad."
+
+            elif action == "close_calculator":
+                close_calculator()
+                return "Closing Calculator."
+
+        elif command in [
+            "no",
+            "nope",
+            "cancel",
+            "don't",
+            "dont",
+            "never mind",
+            "never",
+        ]:
+
+            pending_action = None
+
+            return "Okay, I'll leave it open."
+
+        else:
+
+            return (
+                "I didn't get a yes or no. "
+                "Should I do it?"
+            )
 
     # =========================================================
     # LOCAL INTENT SYSTEM
@@ -175,9 +227,9 @@ def jarvis_response(command):
 
     elif intent == "close_notepad":
 
-        close_notepad()
+        pending_action = "close_notepad"
 
-        return "Closing Notepad."
+        return "Are you sure you want to close Notepad?"
 
     # =========================================================
     # CLOSE CALCULATOR
@@ -185,9 +237,10 @@ def jarvis_response(command):
 
     elif intent == "close_calculator":
 
-        close_calculator()
 
-        return "Closing Calculator."
+        pending_action = "close_calculator"
+
+        return "Are you sure you want to close Calculator?"
 
     # =========================================================
     # DIRECT CLOSE COMMANDS
@@ -493,6 +546,8 @@ def jarvis_response(command):
             return (
                 f"Searching YouTube for {query}."
             )
+
+        
 
     # =========================================================
     # SIMPLE SEARCH
