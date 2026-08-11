@@ -6,6 +6,94 @@ def detect_intent(command):
     command = command.lower().strip()
 
     # =========================================================
+    # NOTHING FOUND
+    # =========================================================
+    
+    # =========================================================
+    # VOLUME UP
+    # =========================================================
+
+    volume_up_patterns = [
+        r"volume\s+up",
+        r"turn\s+(?:the\s+)?volume\s+up",
+        r"increase\s+(?:the\s+)?volume",
+        r"make\s+(?:the\s+)?volume\s+louder",
+        r"make\s+it\s+louder",
+        ]
+
+    for pattern in volume_up_patterns:
+        if re.fullmatch(pattern, command):
+
+            return "volume_up", None
+
+
+    # =========================================================
+    # VOLUME DOWN
+    # =========================================================
+
+    volume_down_patterns = [
+        r"volume\s+down",
+        r"turn\s+(?:the\s+)?volume\s+down",
+        r"decrease\s+(?:the\s+)?volume",
+        r"make\s+(?:the\s+)?volume\s+quieter",
+        r"make\s+it\s+quieter",
+        ]
+
+    for pattern in volume_down_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "volume_down", None
+
+
+    # =========================================================
+    # MUTE
+    # =========================================================
+
+    mute_patterns = [
+        r"mute",
+        r"mute\s+(?:the\s+)?volume",
+        r"mute\s+(?:the\s+)?sound"
+        ]
+
+    for pattern in mute_patterns:
+        if re.fullmatch(pattern, command):
+
+            return "mute_volume", None
+
+
+    # =========================================================
+    # UNMUTE
+    # =========================================================
+
+    unmute_patterns = [
+        r"unmute",
+        r"unmute\s+(?:the\s+)?volume",
+        r"unmute\s+(?:the\s+)?sound",
+        ]
+
+    for pattern in unmute_patterns:
+
+        if re.fullmatch(pattern, command):
+
+            return "unmute_volume", None
+
+    # =========================================================
+    # LOCK COMPUTER
+    # =========================================================
+
+    lock_patterns = [
+        r"lock\s+(?:the\s+)?computer",
+        r"lock\s+(?:my\s+)?computer",
+        r"lock\s+(?:the\s+)?pc",
+        r"lock\s+(?:my\s+)?pc",
+        r"lock\s+windows",
+        ]
+
+    for pattern in lock_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "lock_computer", None
+    # =========================================================
     # OPEN GOOGLE
     # =========================================================
 

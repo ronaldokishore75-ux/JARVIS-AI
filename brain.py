@@ -3,6 +3,7 @@ import re
 
 from intent import detect_intent
 
+
 from memory import load_memory, save_memory
 from ai import ask_ai
 
@@ -24,6 +25,11 @@ from action import (
     open_downloads,
     close_notepad,
     close_calculator,
+    lock_computer,
+    volume_up,
+    volume_down,
+    mute_volume,
+    unmute_volume,
 )
 
 pending_action = None
@@ -110,6 +116,56 @@ def jarvis_response(command):
         open_youtube()
 
         return "Opening YouTube."
+
+    # =========================================================
+    # LOCK COMPUTER
+    # =========================================================
+
+    elif intent == "lock_computer":
+
+        lock_computer()
+
+        return "Locking your computer."
+
+    # =========================================================
+    # VOLUME UP
+    # =========================================================
+
+    elif intent == "volume_up":
+
+        volume_up()
+
+        return "Increasing volume."
+
+    # =========================================================
+    # VOLUME DOWN
+    # =========================================================
+
+    elif intent == "volume_down":
+
+        volume_down()
+
+        return "Decreasing volume."
+
+    # =========================================================
+    # MUTE
+    # =========================================================
+
+    elif intent == "mute_volume":
+
+        mute_volume()
+
+        return "Muting volume."
+
+    # =========================================================
+    # UNMUTE
+    # =========================================================
+
+    elif intent == "unmute_volume":
+
+        unmute_volume()
+
+        return "Unmuting volume."
 
     # =========================================================
     # OPEN NOTEPAD

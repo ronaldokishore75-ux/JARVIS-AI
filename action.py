@@ -2,6 +2,55 @@ import webbrowser
 import subprocess
 import os
 from urllib.parse import quote_plus
+from pycaw.pycaw import AudioUtilities
+
+
+# =========================================================
+# AUDIO
+# =========================================================
+
+def get_volume_controller():
+    device = AudioUtilities.GetSpeakers()
+
+    return device.EndpointVolume   
+
+
+def volume_up():
+    volume = get_volume_controller()
+
+    current = volume.GetMasterVolumeLevelScalar()
+
+    new_volume = min(current + 0.10, 1.0)
+
+    volume.SetMasterVolumeLevelScalar(
+        new_volume,
+        None
+    )
+
+
+def volume_down():
+    volume = get_volume_controller()
+
+    current = volume.GetMasterVolumeLevelScalar()
+
+    new_volume = max(current - 0.10, 0.0)
+
+    volume.SetMasterVolumeLevelScalar(
+        new_volume,
+        None
+    )
+
+
+def mute_volume():
+    volume = get_volume_controller()
+
+    volume.SetMute(1, None)
+
+
+def unmute_volume():
+    volume = get_volume_controller()
+
+    volume.SetMute(0, None)
 
 
 # =========================================================
@@ -43,6 +92,10 @@ def open_calculator():
     print("DEBUG: Launching Calculator...")
     subprocess.Popen("calc.exe")
 
+def lock_computer():
+    subprocess.run(
+        ["rundll32.exe", "user32.dll,LockWorkStation"]
+    )
 
 def open_vscode():
     subprocess.Popen(
