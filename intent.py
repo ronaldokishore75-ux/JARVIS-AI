@@ -14,6 +14,170 @@ def detect_intent(command):
 
     #computer function
 
+ 
+
+
+    # =========================================================
+    # TIMER
+    # =========================================================
+
+
+
+    timer_pattern = r"(?:set|start)\s+(?:a\s+)?timer\s+for\s+(\d+)\s+(second|seconds|minute|minutes|hour|hours)"
+
+    match = re.fullmatch(timer_pattern, command)
+
+    if match:
+        amount = int(match.group(1))
+        unit = match.group(2)
+
+        if unit.startswith("second"):
+            seconds = amount
+
+        elif unit.startswith("minute"):
+            seconds = amount * 60
+
+        elif unit.startswith("hour"):
+            seconds = amount * 60 * 60
+
+        else:
+            seconds = amount
+        return "set_timer", seconds
+
+
+    # =========================================================
+    # CANCEL TIMER
+    # =========================================================
+
+    cancel_timer_patterns = [
+
+        r"cancel timer",
+        r"cancel the timer",
+        r"cancel my timer",
+
+        r"stop timer",
+        r"stop the timer",
+        r"stop my timer",
+
+    # Whisper variations
+        r"cancel time",
+        r"cancel the time",
+        r"cancel my time",
+        r"stop time",
+        r"stop the time",
+        r"stop my time",
+        r"stop time over",
+        ]
+
+    for pattern in cancel_timer_patterns:
+
+        if re.fullmatch(pattern, command):
+
+            return "cancel_timer", None
+
+
+   # =========================================================
+   # TIMER REMAINING
+   # =========================================================
+
+    timer_remaining_patterns = [
+
+       
+        r"how much time is left",
+        r"how much time is remaining",
+        r"how much time remains",
+        r"how long is left",
+        r"how long is remaining",
+        r"how long is left on my timer",
+        r"how much time is left on my timer",
+        r"how much time is remaining on my timer",
+        r"check my timer",
+        r"check the timer",
+        ]
+
+    for pattern in timer_remaining_patterns:
+
+        if re.fullmatch(pattern, command):
+
+            return "timer_remaining", None 
+
+
+    # =========================================================
+    # REMINDER
+    # =========================================================
+
+    reminder_pattern = re.fullmatch(
+        r"remind me in (\d+) (seconds?|minutes?|hours?)"
+        r"(?: to (.+))?",
+        command
+        )
+
+    if reminder_pattern:
+        amount = int(reminder_pattern.group(1))
+        unit = reminder_pattern.group(2)
+        message = reminder_pattern.group(3)
+
+        if unit.startswith("second"):
+            seconds = amount
+
+        elif unit.startswith("minute"):
+            seconds = amount * 60
+
+        elif unit.startswith("hour"):
+            seconds = amount * 60 * 60
+
+        else:
+            seconds = amount
+
+        if message:
+            message = message.strip()
+        else:
+            message = "Your reminder"
+
+        return "set_reminder", (seconds, message)
+
+
+    #=========================================================
+    #CANCEL REMAINDER
+    #===================================
+
+
+    cancel_reminder_patterns = [
+        r"cancel reminder",
+        r"cancel the reminder",
+        r"cancel my reminder",
+        r"stop reminder",
+        r"stop the reminder",
+        r"stop my reminder",
+        ]
+
+    for pattern in cancel_reminder_patterns:
+
+        if re.fullmatch(pattern, command):
+
+            return "cancel_reminder", None
+
+
+
+    # =========================================================
+    # LIST REMINDERS
+    # =========================================================
+
+    list_reminder_patterns = [
+        r"what reminders do i have",
+        r"show my reminders",
+        r"list my reminders",
+        r"check my reminders",
+        r"check reminders",
+    ]
+
+    for pattern in list_reminder_patterns:
+
+        if re.fullmatch(pattern, command):
+
+            return "list_reminders", None
+
+
     # =========================================================
     # CPU USAGE
     # =========================================================

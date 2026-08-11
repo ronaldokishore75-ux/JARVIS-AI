@@ -4,11 +4,151 @@ import os
 from urllib.parse import quote_plus
 from pycaw.pycaw import AudioUtilities
 import psutil
+from voice import speak
+import threading
+import time
 
 
 
 
 # COMPUTER CONTROL FUNCTIONS
+
+timer_start_time = None
+timer_duration = 0
+
+timer_thread = None
+timer_cancel_event = threading.Event()
+
+
+def start_timer(seconds):
+
+    global timer_thread
+    global timer_start_time
+    global timer_duration
+
+    # Cancel any previous timer
+    timer_cancel_event.clear()
+
+    timer_start_time=time.time()
+    timer_duration= seconds
+
+    def timer_worker():
+
+        finished = not timer_cancel_event.wait(seconds)
+
+        if finished:
+
+            print("\n🔔 JARVIS: Your timer is finished!")
+
+            speak("Your timer is finished.")
+
+    timer_thread = threading.Thread(
+        target=timer_worker,
+        daemon=True
+    )
+
+    timer_thread.start()
+
+
+def get_timer_remaining():
+
+    if timer_thread is None or not timer_thread.is_alive():
+
+        return None
+
+    elapsed = time.time() - timer_start_time
+
+    remaining = timer_duration - elapsed
+
+    if remaining <= 0:
+
+        return None
+
+    return round(remaining)
+
+# =========================================================
+# REMINDER
+# =========================================================
+
+active_reminders = []
+reminder_lock = threading.Lock()
+
+
+def start_reminder(seconds, message):
+
+    cancel_event = threading.Event()
+
+    reminder = {
+        "message": message,
+        "cancel_event": cancel_event
+    }
+
+    with reminder_lock:
+        active_reminders.append(reminder)
+
+    def reminder_worker():
+
+        finished = not cancel_event.wait(seconds)
+
+        with reminder_lock:
+
+            if reminder in active_reminders:
+                active_reminders.remove(reminder)
+
+        if finished:
+
+            print(f"\n🔔 JARVIS: Reminder — {message}")
+
+            speak(f"Reminder. {message}")
+
+    reminder_thread = threading.Thread(
+        target=reminder_worker,
+        daemon=True
+    )
+
+    reminder_thread.start()
+
+
+def cancel_reminder():
+
+    with reminder_lock:
+
+        if not active_reminders:
+            return "There are no active reminders."
+
+        reminder = active_reminders.pop(0)
+
+        reminder["cancel_event"].set()
+
+    return "Reminder cancelled."
+
+
+def list_reminders():
+
+    with reminder_lock:
+
+        count = len(active_reminders)
+
+    if count == 0:
+        return "You have no active reminders."
+
+    if count == 1:
+        return "You have 1 active reminder."
+
+    return f"You have {count} active reminders."
+
+
+def cancel_timer():
+
+    if timer_thread is None or not timer_thread.is_alive():
+
+        return "There is no active timer."
+
+    timer_cancel_event.set()
+
+    return "Timer cancelled."  
+
+
 
 def get_cpu_usage():
 
@@ -114,7 +254,7 @@ def set_volume(percent):
 
     percent = max(0, min(percent, 100))
 
-    level = percent / 100
+    level = percent / 100.0
 
     volume.SetMasterVolumeLevelScalar(
         level,

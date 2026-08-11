@@ -36,6 +36,12 @@ from action import (
     get_battery_level,
     set_volume,
     get_current_volume,
+    start_timer,
+    cancel_timer,
+    get_timer_remaining,
+    start_reminder,
+    cancel_reminder,
+    list_reminders,
 )
 
 pending_action = None
@@ -122,6 +128,8 @@ def jarvis_response(command):
         open_youtube()
 
         return "Opening YouTube."
+    
+    
 
     # =========================================================
     # LOCK COMPUTER
@@ -300,6 +308,97 @@ def jarvis_response(command):
 
         return "Opening your Jarvis project in Visual Studio Code."
 
+    #=============================================================
+    #timer
+    #=============================================================
+
+
+    elif intent == "set_timer":
+        start_timer(value)
+
+
+        if value < 60:
+
+            return f"Timer set for {value} seconds."
+
+        if value < 3600:
+
+            minutes = value // 60
+
+            if minutes == 1:
+                return "Timer set for 1 minute."
+
+            return f"Timer set for {minutes} minutes."
+
+        hours = value // 3600
+
+        if hours == 1:
+            return "Timer set for 1 hour."
+
+        return f"Timer set for {hours} hours."
+    
+
+    elif intent == "cancel_timer":
+
+        return cancel_timer()
+    
+
+    elif intent == "timer_remaining":
+
+        remaining = get_timer_remaining()
+
+        if remaining is None:
+            return "You don't have an active timer."
+
+        if remaining < 60:
+            return f"You have {remaining} seconds remaining."
+        minutes = remaining // 60
+        seconds = remaining % 60
+
+        if seconds == 0:
+
+            return f"You have {minutes} minutes remaining."
+        return (
+            f"You have {minutes} minutes "
+            f"and {seconds} seconds remaining."
+            )
+
+
+    elif intent == "set_reminder":
+
+        seconds, message = value
+
+        start_reminder(seconds, message)
+
+
+        if seconds < 60:
+            return f"Reminder set for {seconds} seconds."
+
+        if seconds < 3600:
+
+            minutes = seconds // 60
+
+            if message == "Your reminder":
+
+                return f"Reminder set for {minutes} minutes."
+            return f"I'll remind you in {minutes} minutes to {message}."
+
+        hours = seconds // 3600
+
+        if message == "Your reminder":
+
+            return f"Reminder set for {hours} hours."
+        return f"I'll remind you in {hours} hours to {message}."
+    
+
+    elif intent == "cancel_reminder":
+
+        return cancel_reminder()
+
+
+    elif intent == "list_reminders":
+
+        return list_reminders()
     # =========================================================
     # SEARCH GOOGLE
     # =========================================================
@@ -426,17 +525,28 @@ def jarvis_response(command):
 
         return "I am Jarvis, your personal AI assistant."
 
+
+  
+
     # =========================================================
-    # TIME
+    # CURRENT TIME
     # =========================================================
 
-    if "time" in command:
+    time_patterns = [
 
-        return (
-            f"The current time is "
-            f"{datetime.now().strftime('%I:%M %p')}"
-        )
+        r"what time is it",
+        r"what is the time",
+        r"what's the time",
+        r"tell me the time",
+        r"what is the current time",
+        r"what's the current time",
+        r"current time",
+        r"time now",
+        ]
 
+    if any(re.fullmatch(pattern, command) for pattern in time_patterns):
+
+        return f"The current time is {datetime.now().strftime('%I:%M %p')}"
     # =========================================================
     # DATE
     # =========================================================
