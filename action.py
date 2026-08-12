@@ -7,7 +7,125 @@ import psutil
 from voice import speak
 import threading
 import time
+import pyautogui
 
+
+
+# =========================================================
+# BROWSER NAVIGATION
+# =========================================================
+
+def go_back():
+
+    print("Going back...")
+
+    pyautogui.hotkey("alt", "left")
+
+
+def go_forward():
+
+    print("Going forward...")
+
+    pyautogui.keyDown("alt")
+    time.sleep(0.2)
+
+    pyautogui.press("right")
+
+    time.sleep(0.2)
+
+    pyautogui.keyUp("alt")
+
+
+def refresh_page():
+
+    print("Refreshing page...")
+
+    pyautogui.hotkey("ctrl", "r")
+
+def open_new_tab():
+
+    print("Opening new tab...")
+
+    pyautogui.hotkey("ctrl", "t")
+
+
+
+def close_current_tab():
+
+    print("Closing current tab...")
+
+    pyautogui.hotkey("ctrl", "w")
+
+def next_tab():
+
+    print("Switching to next tab...")
+
+    pyautogui.hotkey("ctrl", "tab")
+
+def previous_tab():
+
+    print("Switching to previous tab...")
+
+    pyautogui.hotkey("ctrl", "shift", "tab")
+
+# =========================================================
+# WINDOW CONTROL
+# =========================================================
+
+def show_desktop():
+
+    print("Showing desktop...")
+
+    pyautogui.hotkey("win", "d")
+
+
+def minimize_window():
+
+    print("Minimizing current window...")
+
+    pyautogui.hotkey("alt", "space")
+    time.sleep(0.3)
+    pyautogui.press("n")
+
+
+def maximize_window():
+
+    print("Maximizing current window...")
+
+
+    pyautogui.hotkey("alt", "space")
+    time.sleep(0.3)
+    pyautogui.press("x")
+
+
+def restore_window():
+
+    print("Restoring current window...")
+
+
+    pyautogui.hotkey("alt", "space")
+    time.sleep(0.3)
+    pyautogui.press("r")
+
+
+def close_window():
+
+    print("Closing current window...")
+
+    pyautogui.hotkey("alt", "f4")
+
+
+def sleep_computer():
+
+    print("Putting computer to sleep...")
+
+    subprocess.run(
+        [
+            "rundll32.exe",
+            "powrprof.dll,SetSuspendState",
+            "0,1,0"
+        ]
+    )
 
 
 

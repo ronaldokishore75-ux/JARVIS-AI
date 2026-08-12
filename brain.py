@@ -42,6 +42,19 @@ from action import (
     start_reminder,
     cancel_reminder,
     list_reminders,
+    minimize_window,
+    maximize_window,
+    restore_window,
+    close_window,
+    show_desktop,
+    sleep_computer,
+    go_back,
+    go_forward,
+    refresh_page,
+    open_new_tab,
+    close_current_tab,
+    next_tab,
+    previous_tab,
 )
 
 pending_action = None
@@ -81,6 +94,17 @@ def jarvis_response(command):
             elif action == "close_calculator":
                 close_calculator()
                 return "Closing Calculator."
+            
+            elif action=="close_window":
+                close_window()
+                return"closing the window"
+
+            elif action=="sleep_computer":
+
+                sleep_computer()
+
+                return"putting the computer to sleep"
+            
 
         elif command in [
             "no",
@@ -109,6 +133,8 @@ def jarvis_response(command):
 
     intent, value = detect_intent(command)
 
+    print(f"DEBUG: intent= {intent},value= {value}")
+
     # =========================================================
     # OPEN GOOGLE
     # =========================================================
@@ -128,7 +154,107 @@ def jarvis_response(command):
         open_youtube()
 
         return "Opening YouTube."
+
+
+    elif intent == "go_back":
+
+        go_back()
+
+        return "Going back."
+
+    elif intent == "go_forward":
+
+        go_forward()
+
+        return "Going forward."
+
+    elif intent == "refresh_page":
+
+        refresh_page()
+
+        return "Refreshing the page."
+
+    elif intent == "open_new_tab":
+
+        open_new_tab()
+
+        return "Opening a new tab."
     
+
+    elif intent == "close_current_tab":
+
+        close_current_tab()
+
+        return "Closing this tab."
+
+    elif intent == "next_tab":
+
+        next_tab()
+
+        return "Switching to the next tab."
+
+    elif intent == "previous_tab":
+
+        previous_tab()
+
+        return "Switching to the previous tab."
+
+
+
+    # =========================================================
+    # WINDOW CONTROL
+    # =========================================================
+
+    elif intent == "minimize_window":
+
+        minimize_window()
+        return "Minimizing the window."
+
+
+    elif intent == "maximize_window":
+
+        maximize_window()
+        return "Maximizing the window."
+
+
+    elif intent == "restore_window":
+
+        restore_window()
+        return "Restoring the window."
+
+
+    elif intent == "yes":
+
+        if pending_action=="close_window":
+
+            close_window()
+
+            pending_action=None
+
+            return "closing the window"
+
+    elif intent=="no":
+        if pending_action=="close_window":
+
+            pending_action=None
+
+            return "okay ,I wont close the window"
+
+
+    elif intent == "show_desktop":
+
+        show_desktop()
+
+        return "Showing the desktop."
+
+    
+
+    elif intent == "sleep_computer":
+
+        pending_action = "sleep_computer"
+
+        return "Are you sure you want to put the computer to sleep?"
+
     
 
     # =========================================================

@@ -14,8 +14,6 @@ def detect_intent(command):
 
     #computer function
 
- 
-
 
     # =========================================================
     # TIMER
@@ -67,7 +65,7 @@ def detect_intent(command):
         r"stop the time",
         r"stop my time",
         r"stop time over",
-        ]
+    ]
 
     for pattern in cancel_timer_patterns:
 
@@ -93,7 +91,7 @@ def detect_intent(command):
         r"how much time is remaining on my timer",
         r"check my timer",
         r"check the timer",
-        ]
+    ]
 
     for pattern in timer_remaining_patterns:
 
@@ -149,7 +147,7 @@ def detect_intent(command):
         r"stop reminder",
         r"stop the reminder",
         r"stop my reminder",
-        ]
+    ]
 
     for pattern in cancel_reminder_patterns:
 
@@ -179,6 +177,206 @@ def detect_intent(command):
 
 
     # =========================================================
+    # WINDOW CONTROL
+    # =========================================================
+
+    minimize_window_patterns = [
+        r"minimize this window",
+        r"minimize the window",
+        r"minimize window",
+        r"minimize these windows",
+    ]
+
+    for pattern in minimize_window_patterns:
+        if re.fullmatch(pattern, command):
+            return "minimize_window", None
+
+
+    maximize_window_patterns = [
+        r"maximize this window",
+        r"maximize the window",
+        r"maximize window",
+    ]
+
+    for pattern in maximize_window_patterns:
+        if re.fullmatch(pattern, command):
+            return "maximize_window", None
+
+
+    restore_window_patterns = [
+        r"restore this window",
+        r"restore the window",
+        r"restore window",
+    ]
+
+    for pattern in restore_window_patterns:
+        if re.fullmatch(pattern, command):
+            return "restore_window", None
+
+
+    close_window_patterns = [
+        r"close this window",
+        r"close the window",
+        r"close window",
+    ]
+
+    for pattern in close_window_patterns:
+        if re.fullmatch(pattern, command):
+            return "close_window", None
+
+
+    # =========================================================
+    # SLEEP COMPUTER
+    # =========================================================
+
+    sleep_computer_patterns = [
+        r"sleep computer",
+        r"sleep the computer",
+        r"put the computer to sleep",
+        r"put my computer to sleep",
+        r"go to sleep",
+    ]
+
+    for pattern in sleep_computer_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "sleep_computer", None
+
+
+    # =========================================================
+    # GO BACK
+    # =========================================================
+
+    go_back_patterns = [
+        r"go back",
+        r"go back to previous page",
+        r"previous page",
+        r"go to the previous page",
+    ]
+
+    for pattern in go_back_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "go_back", None
+
+
+    # =========================================================
+    # GO FORWARD
+    # =========================================================
+
+    go_forward_patterns = [
+        r"go forward",
+        r"forward",
+        r"next page",
+        r"go to the next page",
+    ]
+
+    for pattern in go_forward_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "go_forward", None
+
+    # =========================================================
+    # REFRESH PAGE
+    # =========================================================
+
+    refresh_page_patterns = [
+        r"refresh",
+        r"refresh page",
+        r"refresh this page",
+        r"reload",
+        r"reload page",
+        r"reload this page",
+    ]
+
+    for pattern in refresh_page_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "refresh_page", None  
+
+    # =========================================================
+    # OPEN NEW TAB
+    # =========================================================
+
+    open_new_tab_patterns = [
+        r"open new tab",
+        r"new tab",
+        r"create new tab",
+    ]
+
+    for pattern in open_new_tab_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "open_new_tab", None
+
+
+
+    # =========================================================
+    # CLOSE CURRENT TAB
+    # =========================================================
+
+    close_current_tab_patterns = [
+        r"close this tab",
+        r"close current tab",
+        r"close the tab",
+        r"close tab",
+    ]
+
+    for pattern in close_current_tab_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "close_current_tab", None
+
+
+
+    # =========================================================
+    # NEXT TAB
+    # =========================================================
+
+    next_tab_patterns = [
+        r"next tab",
+        r"switch to next tab",
+        r"go to next tab",
+    ]
+
+    for pattern in next_tab_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "next_tab", None
+
+
+    # =========================================================
+    # PREVIOUS TAB
+    # =========================================================
+
+    previous_tab_patterns = [
+        r"previous tab",
+        r"switch to previous tab",
+        r"go to previous tab",
+        r"last tab",
+    ]
+
+    for pattern in previous_tab_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "previous_tab", None
+    
+    # =========================================================
+    # SHOW DESKTOP
+    # =========================================================
+
+    show_desktop_patterns = [
+        r"show desktop",
+        r"show the desktop",
+        r"go to desktop",
+    ]
+
+    for pattern in show_desktop_patterns:
+        if re.fullmatch(pattern, command):
+            return "show_desktop", None
+
+        
+    # =========================================================
     # CPU USAGE
     # =========================================================
 
@@ -189,7 +387,7 @@ def detect_intent(command):
         r"check cpu usage",
         r"check my cpu",
         r"cpu usage",
-        ]
+    ]
     for pattern in cpu_patterns:
 
         if re.fullmatch(pattern, command):
@@ -208,7 +406,7 @@ def detect_intent(command):
        r"check my ram",
        r"ram usage",
        r"memory usage",
-       ]
+    ]
 
     for pattern in ram_patterns:
         if re.fullmatch(pattern, command):
@@ -228,7 +426,7 @@ def detect_intent(command):
         r"check disk space",
         r"disk usage",
         r"storage usage"
-        ]
+    ]
 
     for pattern in storage_patterns:
         if re.fullmatch(pattern, command):
@@ -248,7 +446,7 @@ def detect_intent(command):
        r"check battery",
        r"battery level",
        r"battery",
-       ]
+    ]
 
     for pattern in battery_patterns:
 
@@ -265,7 +463,7 @@ def detect_intent(command):
         r"increase\s+(?:the\s+)?volume",
         r"make\s+(?:the\s+)?volume\s+louder",
         r"make\s+it\s+louder",
-        ]
+    ]
 
     for pattern in volume_up_patterns:
         if re.fullmatch(pattern, command):
@@ -283,7 +481,7 @@ def detect_intent(command):
         r"decrease\s+(?:the\s+)?volume",
         r"make\s+(?:the\s+)?volume\s+quieter",
         r"make\s+it\s+quieter",
-        ]
+    ]
 
     for pattern in volume_down_patterns:
 
@@ -299,7 +497,7 @@ def detect_intent(command):
         r"mute",
         r"mute\s+(?:the\s+)?volume",
         r"mute\s+(?:the\s+)?sound"
-        ]
+    ]
 
     for pattern in mute_patterns:
         if re.fullmatch(pattern, command):
@@ -315,7 +513,7 @@ def detect_intent(command):
         r"unmute",
         r"unmute\s+(?:the\s+)?volume",
         r"unmute\s+(?:the\s+)?sound",
-        ]
+    ]
 
     for pattern in unmute_patterns:
 
@@ -335,7 +533,7 @@ def detect_intent(command):
         r"change\s+(?:the\s+|my\s+)?volume\s+to\s+(\d+)\s*(?:percent|%)?",
         r"change\s+(?:the\s+|my\s+)?volume\s+(?:at|on)\s+(\d+)\s*(?:percent|%)?",
         r"volume\s+(\d+)\s*(?:percent|%)?",
-        ]
+    ]
 
     for pattern in volume_set_patterns:
 
@@ -370,7 +568,7 @@ def detect_intent(command):
         r"check (?:the\s+|my\s+)?volume level",
         r"current volume",
         r"current volume level",
-        ]
+    ]
 
     for pattern in current_volume_patterns:
 
@@ -388,7 +586,7 @@ def detect_intent(command):
         r"lock\s+(?:the\s+)?pc",
         r"lock\s+(?:my\s+)?pc",
         r"lock\s+windows",
-        ]
+    ]
 
     for pattern in lock_patterns:
 
