@@ -75,6 +75,8 @@ from action import (
     seek_backward_10,
     seek_forward_30,
     seek_backward_30,
+    take_screenshot,
+    open_last_screenshot,
 
 
 
@@ -257,6 +259,25 @@ def jarvis_response(command):
         seek_backward_30()
 
         return "Going back 30 seconds."
+
+
+    #=============================================================
+    #SCREENSHOT
+    #======================================================
+
+
+    elif intent == "take_screenshot":
+
+        filepath = take_screenshot()
+
+        return "Screenshot saved successfully."
+
+    elif intent == "open_last_screenshot":
+
+        if open_last_screenshot():
+            return "Opening your last screenshot."
+
+        return "I couldn't find any screenshots."
 
 
 

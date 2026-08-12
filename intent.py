@@ -459,6 +459,32 @@ def detect_intent(command):
         return "seek_backward_30", None
 
 
+    # =========================================================
+    # TAKE SCREENSHOT
+    # =========================================================
+
+    if command in [
+        "take a screenshot",
+        "take screenshot",
+        "capture the screen",
+        "capture screen",
+        "save a screenshot",
+    ]:
+        return "take_screenshot", None
+
+    # =========================================================
+    # OPEN LAST SCREENSHOT
+    # =========================================================
+
+    if command in [
+        "open my last screenshot",
+        "open the last screenshot",
+        "show my last screenshot",
+        "show the last screenshot",
+    ]:
+        return "open_last_screenshot", None
+
+
 
     
     # =========================================================

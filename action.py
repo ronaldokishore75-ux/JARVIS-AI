@@ -1,6 +1,7 @@
 import webbrowser
 import subprocess
 import os
+from datetime import datetime
 from urllib.parse import quote_plus
 from pycaw.pycaw import AudioUtilities
 import psutil
@@ -15,6 +16,82 @@ from browser_controller import browser_controller
 pytesseract.pytesseract.tesseract_cmd = (
     r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 )
+
+
+
+# =========================================================
+# SCREENSHOT
+# =========================================================
+
+
+
+def take_screenshot():
+
+    screenshots_folder = os.path.join(
+        os.path.dirname(__file__),
+        "screenshots"
+    )
+
+    os.makedirs(
+        screenshots_folder,
+        exist_ok=True
+    )
+
+    timestamp = datetime.now().strftime(
+        "%Y-%m-%d_%H-%M-%S"
+    )
+
+    filename = f"screenshot_{timestamp}.png"
+
+    filepath = os.path.join(
+        screenshots_folder,
+        filename
+    )
+
+    screenshot = pyautogui.screenshot()
+
+    screenshot.save(filepath)
+
+    print(f"Screenshot saved: {filepath}")
+
+    return filepath
+
+# =========================================================
+# OPEN LAST SCREENSHOT
+# =========================================================
+
+def open_last_screenshot():
+
+    screenshots_folder = os.path.join(
+        os.path.dirname(__file__),
+        "screenshots"
+    )
+
+    if not os.path.exists(screenshots_folder):
+        return False
+
+    files = [
+        os.path.join(screenshots_folder, file)
+        for file in os.listdir(screenshots_folder)
+        if file.lower().endswith(".png")
+    ]
+
+    if not files:
+        return False
+
+    latest_file = max(
+        files,
+        key=os.path.getmtime
+    )
+
+    print(f"Opening screenshot: {latest_file}")
+
+    os.startfile(latest_file)
+
+    return True
+
+
+
 
 
 
