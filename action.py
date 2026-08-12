@@ -20,7 +20,53 @@ pytesseract.pytesseract.tesseract_cmd = (
 
 
 
+# =========================================================
+# MOUSE MOVEMENT
+# =========================================================
 
+def move_mouse_left(pixels=200):
+    print(f"Moving mouse left {pixels} pixels...")
+    pyautogui.moveRel(-pixels, 0, duration=0.3)
+
+
+def move_mouse_right(pixels=200):
+    print(f"Moving mouse right {pixels} pixels...")
+    pyautogui.moveRel(pixels, 0, duration=0.3)
+
+
+def move_mouse_up(pixels=200):
+    print(f"Moving mouse up {pixels} pixels...")
+    pyautogui.moveRel(0, -pixels, duration=0.3)
+
+
+def move_mouse_down(pixels=200):
+    print(f"Moving mouse down {pixels} pixels...")
+    pyautogui.moveRel(0, pixels, duration=0.3)
+
+
+
+# =========================================================
+# MOUSE CONTROL
+# =========================================================
+
+def mouse_left_click():
+    print("Left clicking...")
+    pyautogui.click()
+
+
+def mouse_right_click():
+    print("Right clicking...")
+    pyautogui.rightClick()
+
+
+def mouse_double_click():
+    print("Double clicking...")
+    pyautogui.doubleClick()
+
+
+def mouse_middle_click():
+    print("Middle clicking...")
+    pyautogui.middleClick()
 
 
 # =========================================================

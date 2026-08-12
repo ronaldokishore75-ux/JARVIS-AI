@@ -86,6 +86,15 @@ from action import (
     hotkey,
     open_found_file,
     open_found_folder,
+    mouse_left_click,
+    mouse_right_click,
+    mouse_double_click,
+    mouse_middle_click,
+    move_mouse_left,
+    move_mouse_right,
+    move_mouse_up,
+    move_mouse_down,
+
 
 
 
@@ -269,6 +278,102 @@ def jarvis_response(command):
         seek_backward_30()
 
         return "Going back 30 seconds."
+
+
+
+
+    # =========================================================
+    # VARIABLE MOUSE MOVEMENT
+    # =========================================================
+
+    elif intent == "move_mouse_variable":
+
+        direction, distance = value
+
+        if direction == "left":
+
+            move_mouse_left(distance)
+
+            return f"Moving the mouse left {distance} pixels."
+
+        elif direction == "right":
+
+            move_mouse_right(distance)
+
+            return f"Moving the mouse right {distance} pixels."
+
+        elif direction == "up":
+
+            move_mouse_up(distance)
+
+            return f"Moving the mouse up {distance} pixels."
+
+        elif direction == "down":
+
+            move_mouse_down(distance)
+
+            return f"Moving the mouse down {distance} pixels."
+
+    # =========================================================
+    # MOUSE MOVEMENT
+    # =========================================================
+
+    elif intent == "move_mouse":
+
+        if value == "left":
+
+            move_mouse_left()
+
+            return "Moving the mouse left."
+
+        elif value == "right":
+
+            move_mouse_right()
+
+            return "Moving the mouse right."
+
+        elif value == "up":
+
+            move_mouse_up()
+
+            return "Moving the mouse up."
+
+        elif value == "down":
+
+            move_mouse_down()
+
+            return "Moving the mouse down."
+
+    # =========================================================
+    # MOUSE CONTROL
+    # =========================================================
+
+    elif intent == "mouse_left_click":
+
+        mouse_left_click()
+
+        return "Left clicking."
+
+
+    elif intent == "mouse_right_click":
+
+        mouse_right_click()
+
+        return "Right clicking."
+
+
+    elif intent == "mouse_double_click":
+
+        mouse_double_click()
+
+        return "Double clicking."
+
+
+    elif intent == "mouse_middle_click":
+
+        mouse_middle_click()
+
+        return "Middle clicking."
 
 
 

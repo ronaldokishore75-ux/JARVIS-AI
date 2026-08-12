@@ -372,6 +372,9 @@ def detect_intent(command):
         return "play_pause_media", None
 
 
+    
+
+
 
     # =========================================================
     # NEXT VIDEO
@@ -630,6 +633,89 @@ def detect_intent(command):
         filename = match.group(1).strip()
 
         return "open_found_file", filename
+
+
+    # =========================================================
+    # VARIABLE MOUSE MOVEMENT
+    # =========================================================
+
+    match = re.fullmatch(
+        r"move (?:the )?mouse (left|right|up|down)(?: (\d+))?(?: pixels?)?",
+        command
+    )
+
+    if match:
+
+        direction = match.group(1)
+
+        distance = match.group(2)
+
+        if distance:
+
+            distance = int(distance)
+        else:
+            distance = 200
+
+        return "move_mouse_variable", (direction, distance)
+
+
+    # =========================================================
+    # SMALL MOUSE MOVEMENT
+    # =========================================================
+
+    match = re.fullmatch(
+        r"move (?:the )?mouse (a little )?(left|right|up|down)",
+        command
+    )
+
+    if match:
+
+        direction = match.group(2)
+
+        return "move_mouse_variable", (direction, 75)
+
+
+
+    # =========================================================
+    # MOUSE CONTROL
+    # =========================================================
+
+    mouse_action_patterns = {
+        "left click": "mouse_left_click",
+        "left-click": "mouse_left_click",
+        "click": "mouse_left_click",
+
+        "right click": "mouse_right_click",
+        "right-click": "mouse_right_click",
+
+        "double click": "mouse_double_click",
+        "double-click": "mouse_double_click",
+
+        "middle click": "mouse_middle_click",
+        "middle-click": "mouse_middle_click",
+    }
+
+    if command in mouse_action_patterns:
+
+        return mouse_action_patterns[command], None
+
+
+    # =========================================================
+    # MOUSE MOVEMENT
+    # =========================================================
+
+    mouse_move_patterns = [
+        (r"move (?:the )?mouse left", "left"),
+        (r"move (?:the )?mouse right", "right"),
+        (r"move (?:the )?mouse up", "up"),
+        (r"move (?:the )?mouse down", "down"),
+    ]
+
+    for pattern, direction in mouse_move_patterns:
+
+        if re.fullmatch(pattern, command):
+
+            return "move_mouse", direction
 
 
 
