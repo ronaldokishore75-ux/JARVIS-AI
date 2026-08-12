@@ -459,6 +459,29 @@ def detect_intent(command):
         return "seek_backward_30", None
 
 
+
+    # =========================================================
+    # CLIPBOARD
+    # =========================================================
+
+    if command in [
+        "what is in my clipboard",
+        "what's in my clipboard",
+        "read my clipboard",
+        "check my clipboard",
+    ]:
+        return "get_clipboard", None
+
+
+    if command in [
+        "clear my clipboard",
+        "clear clipboard",
+        "empty my clipboard",
+        "empty clipboard",
+    ]:
+        return "clear_clipboard", None
+
+
     # =========================================================
     # TAKE SCREENSHOT
     # =========================================================

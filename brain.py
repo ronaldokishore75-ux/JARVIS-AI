@@ -77,6 +77,8 @@ from action import (
     seek_backward_30,
     take_screenshot,
     open_last_screenshot,
+    get_clipboard,
+    clear_clipboard,
 
 
 
@@ -259,6 +261,21 @@ def jarvis_response(command):
         seek_backward_30()
 
         return "Going back 30 seconds."
+
+    #============================================================
+    # CLIPBOARD
+    #===========================================
+
+    elif intent == "get_clipboard":
+
+        return get_clipboard()
+
+    elif intent == "clear_clipboard":
+
+        if clear_clipboard():
+            return "Clipboard cleared."
+
+        return "I couldn't clear the clipboard."
 
 
     #=============================================================

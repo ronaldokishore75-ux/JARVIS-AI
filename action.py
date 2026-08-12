@@ -19,6 +19,59 @@ pytesseract.pytesseract.tesseract_cmd = (
 
 
 
+
+
+
+# =========================================================
+# CLIPBOARD CONTROL
+# =========================================================
+
+def get_clipboard():
+
+    try:
+
+        import tkinter as tk
+
+        root = tk.Tk()
+        root.withdraw()
+
+        text = root.clipboard_get()
+
+        root.destroy()
+
+        if not text:
+            return "Your clipboard is empty."
+
+        return f"Your clipboard contains: {text}"
+
+    except Exception:
+
+        return "I couldn't read the clipboard."
+
+
+def clear_clipboard():
+
+    try:
+
+        import tkinter as tk
+
+        root = tk.Tk()
+        root.withdraw()
+
+        root.clipboard_clear()
+        root.update()
+
+        root.destroy()
+
+        return True
+
+    except Exception:
+
+        return False
+
+
+
+
 # =========================================================
 # SCREENSHOT
 # =========================================================
