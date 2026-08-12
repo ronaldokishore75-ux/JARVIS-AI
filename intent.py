@@ -243,6 +243,10 @@ def detect_intent(command):
             return "sleep_computer", None
 
 
+
+  
+
+
     # =========================================================
     # GO BACK
     # =========================================================
@@ -260,107 +264,6 @@ def detect_intent(command):
             return "go_back", None
 
 
-    # =========================================================
-    # GO FORWARD
-    # =========================================================
-
-    go_forward_patterns = [
-        r"go forward",
-        r"forward",
-        r"next page",
-        r"go to the next page",
-    ]
-
-    for pattern in go_forward_patterns:
-
-        if re.fullmatch(pattern, command):
-            return "go_forward", None
-
-    # =========================================================
-    # REFRESH PAGE
-    # =========================================================
-
-    refresh_page_patterns = [
-        r"refresh",
-        r"refresh page",
-        r"refresh this page",
-        r"reload",
-        r"reload page",
-        r"reload this page",
-    ]
-
-    for pattern in refresh_page_patterns:
-
-        if re.fullmatch(pattern, command):
-            return "refresh_page", None  
-
-    # =========================================================
-    # OPEN NEW TAB
-    # =========================================================
-
-    open_new_tab_patterns = [
-        r"open new tab",
-        r"new tab",
-        r"create new tab",
-    ]
-
-    for pattern in open_new_tab_patterns:
-
-        if re.fullmatch(pattern, command):
-            return "open_new_tab", None
-
-
-
-    # =========================================================
-    # CLOSE CURRENT TAB
-    # =========================================================
-
-    close_current_tab_patterns = [
-        r"close this tab",
-        r"close current tab",
-        r"close the tab",
-        r"close tab",
-    ]
-
-    for pattern in close_current_tab_patterns:
-
-        if re.fullmatch(pattern, command):
-            return "close_current_tab", None
-
-
-
-    # =========================================================
-    # NEXT TAB
-    # =========================================================
-
-    next_tab_patterns = [
-        r"next tab",
-        r"switch to next tab",
-        r"go to next tab",
-    ]
-
-    for pattern in next_tab_patterns:
-
-        if re.fullmatch(pattern, command):
-            return "next_tab", None
-
-
-    # =========================================================
-    # PREVIOUS TAB
-    # =========================================================
-
-    previous_tab_patterns = [
-        r"previous tab",
-        r"switch to previous tab",
-        r"go to previous tab",
-        r"last tab",
-    ]
-
-    for pattern in previous_tab_patterns:
-
-        if re.fullmatch(pattern, command):
-            return "previous_tab", None
-    
     # =========================================================
     # SHOW DESKTOP
     # =========================================================
@@ -452,6 +355,111 @@ def detect_intent(command):
 
         if re.fullmatch(pattern, command):
             return "battery_level", None
+
+
+    # =========================================================
+    # PLAY / PAUSE MEDIA
+    # =========================================================
+
+    if command in [
+        "play",
+        "pause",
+        "play video",
+        "pause video",
+        "resume",
+        "resume video",
+    ]:
+        return "play_pause_media", None
+
+
+
+    # =========================================================
+    # NEXT VIDEO
+    # =========================================================
+
+    if command in [
+        "next video",
+        "skip to next video",
+        "play next video",
+        "go to next video",
+    ]:
+        return "next_video", None
+
+
+    # =========================================================
+    # PREVIOUS VIDEO
+    # =========================================================
+
+    if command in [
+        "previous video",
+        "go to previous video",
+        "play previous video",
+    ]:
+        return "previous_video", None
+
+    # =========================================================
+    # YOUTUBE MUTE
+    # =========================================================
+
+    if command in [
+        "youtube mute",
+        "mute youtube",
+        "mute the video",
+        "mute video",
+    ]:
+        return "youtube_mute", None
+
+
+    # =========================================================
+    # YOUTUBE UNMUTE
+    # =========================================================
+
+    if command in [
+        "youtube unmute",
+        "unmute youtube",
+        "unmute the video",
+        "unmute video", 
+    ]:
+        return "youtube_unmute", None
+
+
+    # =========================================================
+    # MEDIA SEEK
+    # =========================================================
+
+    if command in [
+        "skip forward 10 seconds",
+        "forward 10 seconds",
+        "go forward 10 seconds",
+    ]:
+        return "seek_forward_10", None
+
+
+    if command in [
+        "go back 10 seconds",
+        "skip back 10 seconds",
+        "back 10 seconds",
+    ]:
+        return "seek_backward_10", None
+
+
+    if command in [
+        "skip forward 30 seconds",
+        "forward 30 seconds",
+        "go forward 30 seconds",
+    ]:
+        return "seek_forward_30", None
+
+
+    if command in [
+        "go back 30 seconds",
+        "skip back 30 seconds",
+        "back 30 seconds",
+    ]:
+        return "seek_backward_30", None
+
+
+
     
     # =========================================================
     # VOLUME UP
@@ -592,6 +600,290 @@ def detect_intent(command):
 
         if re.fullmatch(pattern, command):
             return "lock_computer", None
+
+
+
+    # =========================================================
+    # YOUTUBE SEARCH
+    # =========================================================
+
+    match = re.fullmatch(
+        r"(?:search youtube for|youtube search for|search on youtube for)\s+(.+)",
+        command
+    )
+
+    if match:
+        
+        query = match.group(1).strip()
+        return "search_youtube", query
+
+
+    # =========================================================
+    # SKIP AD
+    # =========================================================
+
+    if (
+        "skip ad" in command
+        or "skip ads" in command
+        or "skip the ad" in command
+        or "skip advertisement" in command
+    ):
+        return "skip_ad", None
+
+    # =========================================================
+    # FULL SCREEN
+    # =========================================================
+
+    if (
+        "full screen" in command
+        or "fullscreen" in command
+        or "go full screen" in command
+    ):
+        return "full_screen", None
+
+
+    # =========================================================
+    # EXIT FULL SCREEN
+    # =========================================================
+
+    if (
+        "exit full screen" in command
+        or "exit fullscreen" in command
+        or "leave full screen" in command
+        or "close full screen" in command
+    ):
+        return "exit_full_screen", None
+
+
+
+
+    
+
+    # =========================================================
+    # GOOGLE SEARCH
+    # =========================================================
+
+    match = re.fullmatch(
+        r"(?:search google for|google search for)\s+(.+)",
+        command
+    )
+
+    if match:
+        query = match.group(1).strip()
+        return "search_google", query
+
+
+
+    # =========================================================
+    # BROWSER SEARCH
+    # =========================================================
+
+    match = re.match(
+        r"(?:search for|search|look up|google)\s+(.+)",
+        command
+    )
+
+    if match:
+
+        query = match.group(1).strip()
+
+        return "browser_search", query 
+
+
+    # =========================================================
+    # CLICK LINK BY NAME
+    # =========================================================
+
+    match = re.fullmatch(
+        r"click\s+(.+)",
+        command
+    )
+
+    if match:
+        link_name = match.group(1).strip()
+
+        return "click_link", link_name
+
+
+    # =========================================================
+    # FIND LINK AND CLICK
+    # =========================================================
+
+    match = re.fullmatch(
+        r"find\s+(.+?)\s+(?:and\s+)?click(?:\s+it)?",
+        command
+    )
+
+    if match:
+        link_name = match.group(1).strip()
+
+        return "click_link", link_name
+
+
+
+    # =========================================================
+    # SCROLL DOWN LITTLE
+    # =========================================================
+
+    scroll_down_little_patterns = [
+        r"scroll down a little",
+        r"scroll down little",
+        r"scroll down slightly",
+    ]
+
+    for pattern in scroll_down_little_patterns:
+        if re.fullmatch(pattern, command):
+            return "scroll_down_little", None
+
+
+    # =========================================================
+    # SCROLL UP LITTLE
+    # =========================================================
+
+    scroll_up_little_patterns = [
+        r"scroll up a little",
+        r"scroll up little",
+        r"scroll up slightly",
+    ]
+
+    for pattern in scroll_up_little_patterns:
+        if re.fullmatch(pattern, command):
+            return "scroll_up_little", None
+
+
+    # =========================================================
+    # SCROLL DOWN
+    # =========================================================
+
+    scroll_down_patterns = [
+        r"scroll down",
+        r"go down",
+    ]
+
+    for pattern in scroll_down_patterns:
+        if re.fullmatch(pattern, command):
+            return "scroll_down", None
+
+
+    # =========================================================
+    # SCROLL UP
+    # =========================================================
+
+    scroll_up_patterns = [
+        r"scroll up",
+        r"go up",
+    ]
+
+    for pattern in scroll_up_patterns:
+        if re.fullmatch(pattern, command):
+            return "scroll_up", None
+
+
+    # =========================================================
+    # GO FORWARD
+    # =========================================================
+
+    go_forward_patterns = [
+        r"go forward",
+        r"forward",
+        r"next page",
+        r"go to the next page",
+    ]
+
+    for pattern in go_forward_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "go_forward", None
+
+    # =========================================================
+    # REFRESH PAGE
+    # =========================================================
+
+    refresh_page_patterns = [
+        r"refresh",
+        r"refresh page",
+        r"refresh this page",
+        r"reload",
+        r"reload page",
+        r"reload this page",
+    ]
+
+    for pattern in refresh_page_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "refresh_page", None  
+
+    # =========================================================
+    # OPEN NEW TAB
+    # =========================================================
+
+    open_new_tab_patterns = [
+        r"open new tab",
+        r"new tab",
+        r"create new tab",
+    ]
+
+    for pattern in open_new_tab_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "open_new_tab", None
+
+
+
+    # =========================================================
+    # CLOSE CURRENT TAB
+    # =========================================================
+
+    close_current_tab_patterns = [
+        r"close this tab",
+        r"close current tab",
+        r"close the tab",
+        r"close tab",
+    ]
+
+    for pattern in close_current_tab_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "close_current_tab", None
+
+
+
+    # =========================================================
+    # NEXT TAB
+    # =========================================================
+
+    next_tab_patterns = [
+        r"next tab",
+        r"switch to next tab",
+        r"go to next tab",
+    ]
+
+    for pattern in next_tab_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "next_tab", None
+
+
+    # =========================================================
+    # PREVIOUS TAB
+    # =========================================================
+
+    previous_tab_patterns = [
+        r"previous tab",
+        r"switch to previous tab",
+        r"go to previous tab",
+        r"last tab",
+    ]
+
+    for pattern in previous_tab_patterns:
+
+        if re.fullmatch(pattern, command):
+            return "previous_tab", None
+    
+
+
+
+
     # =========================================================
     # OPEN GOOGLE
     # =========================================================
@@ -621,6 +913,9 @@ def detect_intent(command):
     for pattern in youtube_open_patterns:
         if re.fullmatch(pattern, command):
             return "open_youtube", None
+
+
+
 
     # =========================================================
     # OPEN NOTEPAD

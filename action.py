@@ -8,8 +8,352 @@ from voice import speak
 import threading
 import time
 import pyautogui
+import pytesseract
+from browser_controller import browser_controller
 
 
+pytesseract.pytesseract.tesseract_cmd = (
+    r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+)
+
+
+
+# =========================================================
+# MEDIA PLAY / PAUSE
+# =========================================================
+
+def play_pause_media():
+
+    print("Toggling play/pause...")
+
+    pyautogui.press("space")
+
+
+# =========================================================
+# NEXT VIDEO
+# =========================================================
+
+def next_video():
+
+    print("Skipping to next video...")
+
+    pyautogui.hotkey("shift", "n")
+
+def previous_video():
+
+    print("Going to previous video...")
+
+    pyautogui.hotkey("shift", "p")
+
+
+def youtube_mute():
+
+    print("Muting YouTube...")
+
+    pyautogui.press("m")
+
+def youtube_unmute():
+
+    print("Unmuting YouTube...")
+
+    pyautogui.press("m")
+
+
+# =========================================================
+# MEDIA SEEK
+# =========================================================
+
+def seek_forward_10():
+    print("Skipping forward 10 seconds...")
+    
+    for _ in range(1):
+        pyautogui.press("right")
+
+
+def seek_backward_10():
+    print("Skipping backward 10 seconds...")
+    
+    for _ in range(1):
+        pyautogui.press("left")
+
+
+def seek_forward_30():
+    print("Skipping forward 30 seconds...")
+    
+    for _ in range(3):
+        pyautogui.press("right")
+        time.sleep(0.1)
+
+
+def seek_backward_30():
+    print("Skipping backward 30 seconds...")
+    
+    for _ in range(3):
+        pyautogui.press("left")
+        time.sleep(0.1)
+
+# =========================================================
+# BROWSER SEARCH
+# =========================================================
+
+def search_browser(query):
+
+    print(f"Searching for: {query}")
+
+    # Focus browser address/search bar
+    pyautogui.hotkey("ctrl", "l")
+
+    time.sleep(0.5)
+
+    # Type the search query
+    pyautogui.write(query, interval=0.03)
+
+    time.sleep(0.5)
+
+    # Search
+    pyautogui.press("enter")
+
+# =========================================================
+# PLAYWRIGHT GOOGLE SEARCH
+# =========================================================
+
+def search_google(query):
+
+    print(f"Searching Google for: {query}")
+
+    browser_controller.search_google(query)
+
+
+# =========================================================
+# PLAYWRIGHT YOUTUBE SEARCH
+# =========================================================
+
+def open_youtube():
+
+    print("Opening YouTube...")
+
+    browser_controller.open_youtube()
+
+
+# =========================================================
+# CLICK LINK BY NAME
+# =========================================================
+
+def click_link_by_name(link_name):
+
+    print(f"Looking for: {link_name}")
+
+    max_scroll_attempts = 5
+
+    for attempt in range(max_scroll_attempts + 1):
+
+        print(
+            f"Search attempt "
+            f"{attempt + 1}/{max_scroll_attempts + 1}"
+        )
+
+        screenshot = pyautogui.screenshot()
+
+        data = pytesseract.image_to_data(
+            screenshot,
+            output_type=pytesseract.Output.DICT
+        )
+
+        target_words = set(
+            link_name.lower().strip().split()
+        )
+
+        lines = {}
+
+        for i, text in enumerate(data["text"]):
+
+            text = text.lower().strip()
+
+            if not text:
+                continue
+
+            line_id = (
+                data["block_num"][i],
+                data["par_num"][i],
+                data["line_num"][i]
+            )
+
+            if line_id not in lines:
+
+                lines[line_id] = {
+                    "words": [],
+                    "left": [],
+                    "top": [],
+                    "right": [],
+                    "bottom": []
+                }
+
+            lines[line_id]["words"].append(text)
+
+            lines[line_id]["left"].append(
+                data["left"][i]
+            )
+
+            lines[line_id]["top"].append(
+                data["top"][i]
+            )
+
+            lines[line_id]["right"].append(
+                data["left"][i] + data["width"][i]
+            )
+
+            lines[line_id]["bottom"].append(
+                data["top"][i] + data["height"][i]
+            )
+
+        best_match = None
+        best_score = 0
+
+        for line in lines.values():
+
+            line_words = set(line["words"])
+
+            matched_words = target_words.intersection(
+                line_words
+            )
+
+            score = len(matched_words)
+
+            if score > best_score:
+
+                best_score = score
+                best_match = line
+
+        # ---------------------------------------------
+        # MATCH FOUND
+        # ---------------------------------------------
+
+        if best_match and best_score > 0:
+
+            left = min(best_match["left"])
+            top = min(best_match["top"])
+            right = max(best_match["right"])
+            bottom = max(best_match["bottom"])
+
+            click_x = (left + right) // 2
+            click_y = (top + bottom) // 2
+
+            found_text = " ".join(
+                best_match["words"]
+            )
+
+            print(
+                f"Found match: {found_text}"
+            )
+
+            print(
+                f"Match score: {best_score}"
+            )
+
+            print(
+                f"Clicking at: "
+                f"{click_x}, {click_y}"
+            )
+
+            pyautogui.moveTo(
+                click_x,
+                click_y,
+                duration=0.5
+            )
+
+            pyautogui.click()
+
+            return True
+
+        # ---------------------------------------------
+        # NOT FOUND — SCROLL
+        # ---------------------------------------------
+
+        if attempt < max_scroll_attempts:
+
+            print(
+                "No match found. "
+                "Scrolling down..."
+            )
+
+            pyautogui.scroll(-5)
+
+            time.sleep(1.5)
+
+    print(
+        f"Could not find '{link_name}' "
+        "after scrolling."
+    )
+
+    return False
+
+def skip_ad():
+
+    possible_names = [
+        "skip ad",
+        "skip ads",
+        "skip"
+    ]
+
+    for name in possible_names:
+
+        print(f"Trying to find: {name}")
+
+        if click_link_by_name(name):
+            print("Ad skipped.")
+            return True
+
+    print("Skip button not found.")
+
+    return False
+
+def full_screen():
+
+    print("Entering full screen...")
+
+    pyautogui.press("f")
+
+    return True
+
+
+def exit_full_screen():
+
+    print("Exiting full screen...")
+
+    pyautogui.press("esc")
+
+    return True
+
+# =========================================================
+# BROWSER SCROLL
+# =========================================================
+
+def scroll_down():
+
+    print("Scrolling down...")
+
+    browser_controller.scroll_down()
+
+
+def scroll_up():
+
+    print("Scrolling up...")
+
+    browser_controller.scroll_up()
+
+
+def scroll_down_little():
+
+    print("Scrolling down a little...")
+
+    browser_controller.scroll_down_little()
+
+
+def scroll_up_little():
+
+    print("Scrolling up a little...")
+
+    browser_controller.scroll_up_little()
 
 # =========================================================
 # BROWSER NAVIGATION
@@ -411,12 +755,17 @@ def search_google(query):
 # =========================================================
 
 def open_youtube():
-    webbrowser.open("https://www.youtube.com")
+
+    print("Opening YouTube in JARVIS browser...")
+
+    browser_controller.open_youtube()
 
 
 def search_youtube(query):
-    url = f"https://www.youtube.com/results?search_query={quote_plus(query)}"
-    webbrowser.open(url)
+
+    print(f"Searching YouTube for: {query}")
+
+    browser_controller.search_youtube(query)
 
 
 # =========================================================

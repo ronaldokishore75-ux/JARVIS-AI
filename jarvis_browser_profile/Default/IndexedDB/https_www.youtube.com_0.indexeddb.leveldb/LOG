@@ -1,0 +1,9 @@
+2026/08/12-21:16:20.353 5938 Reusing MANIFEST d:\jarvis\jarvis_browser_profile\Default\IndexedDB\https_www.youtube.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/08/12-21:16:20.353 5938 Recovering log #7
+2026/08/12-21:16:20.356 5938 Reusing old log d:\jarvis\jarvis_browser_profile\Default\IndexedDB\https_www.youtube.com_0.indexeddb.leveldb/000007.log 
+2026/08/12-21:16:21.758 6058 Compacting 1@1 + 1@2 files
+2026/08/12-21:16:21.777 6058 Generated table #10@1: 392 keys, 38926 bytes
+2026/08/12-21:16:21.778 6058 Compacted 1@1 + 1@2 files => 38926 bytes
+2026/08/12-21:16:21.780 6058 compacted to: files[ 0 0 1 0 0 0 0 ]
+2026/08/12-21:16:21.781 6058 Delete type=2 #5
+2026/08/12-21:16:21.781 6058 Delete type=2 #8

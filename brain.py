@@ -55,6 +55,29 @@ from action import (
     close_current_tab,
     next_tab,
     previous_tab,
+    search_browser,
+    search_google,
+    search_youtube,
+    scroll_down,
+    scroll_up,
+    scroll_down_little,
+    scroll_up_little,
+    click_link_by_name,
+    skip_ad,
+    full_screen,
+    exit_full_screen,
+    play_pause_media,
+    next_video,
+    previous_video,
+    youtube_mute,
+    youtube_unmute,
+    seek_forward_10,
+    seek_backward_10,
+    seek_forward_30,
+    seek_backward_30,
+
+
+
 )
 
 pending_action = None
@@ -156,6 +179,164 @@ def jarvis_response(command):
         return "Opening YouTube."
 
 
+    elif intent == "search_google":
+
+        search_google(value)
+
+        return f"Searching Google for {value}."
+
+
+    elif intent == "search_youtube":
+
+        search_youtube(value)
+
+        return f"Searching YouTube for {value}."
+
+
+    elif intent == "browser_search":
+
+        search_browser(value)
+
+        return f"Searching for {value}."
+
+
+    elif intent == "play_pause_media":
+
+        play_pause_media()
+
+        return "Toggling play and pause."
+
+
+    elif intent == "next_video":
+
+        next_video()
+
+        return "Playing the next video."
+
+    elif intent == "previous_video":
+
+        previous_video()
+
+        return "Playing the previous video."
+
+    elif intent == "youtube_mute":
+
+        youtube_mute()
+
+        return "Muting YouTube."
+
+    elif intent == "youtube_unmute":
+
+        youtube_unmute()
+
+        return "Unmuting YouTube."
+
+    elif intent == "seek_forward_10":
+
+        seek_forward_10()
+
+        return "Skipping forward 10 seconds."
+
+
+    elif intent == "seek_backward_10":
+
+        seek_backward_10()
+
+        return "Going back 10 seconds."
+
+
+    elif intent == "seek_forward_30":
+
+        seek_forward_30()
+
+        return "Skipping forward 30 seconds."
+
+
+    elif intent == "seek_backward_30":
+
+        seek_backward_30()
+
+        return "Going back 30 seconds."
+
+
+
+
+
+     # =========================================================
+    #    SCROLL DOWN LITTLE
+    # =========================================================
+
+    elif intent == "scroll_down_little":
+
+        scroll_down_little()
+
+        return "Scrolling down a little."
+
+
+# =========================================================
+# SCROLL UP LITTLE
+# =========================================================
+
+    elif intent == "scroll_up_little":
+
+        scroll_up_little()
+
+        return "Scrolling up a little."
+
+
+# =========================================================
+# SCROLL DOWN
+# =========================================================
+
+    elif intent == "scroll_down":
+
+        scroll_down()
+
+        return "Scrolling down."
+
+
+# =========================================================
+# SCROLL UP
+# =========================================================
+
+    elif intent == "scroll_up":
+
+        scroll_up()
+
+        return "Scrolling up."
+
+    # =========================================================
+    # CLICK LINK
+    # =========================================================
+
+    elif intent == "click_link":
+
+        click_link_by_name(value)
+
+        return f"Clicking {value}."
+
+    elif intent == "skip_ad":
+
+        if skip_ad():
+        
+            return "Skipping the ad."
+
+        return "I couldn't find a skip button."
+
+    elif intent == "full_screen":
+
+        full_screen()
+
+        return "Entering full screen."
+
+
+    elif intent == "exit_full_screen":
+
+        exit_full_screen()
+
+        return "Exiting full screen."
+
+
     elif intent == "go_back":
 
         go_back()
@@ -198,6 +379,7 @@ def jarvis_response(command):
         previous_tab()
 
         return "Switching to the previous tab."
+
 
 
 
