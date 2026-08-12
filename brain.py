@@ -79,6 +79,14 @@ from action import (
     open_last_screenshot,
     get_clipboard,
     clear_clipboard,
+    get_running_apps,
+    is_app_running,
+    focus_app,
+    press_key,
+    hotkey,
+    open_found_file,
+    open_found_folder,
+
 
 
 
@@ -261,6 +269,97 @@ def jarvis_response(command):
         seek_backward_30()
 
         return "Going back 30 seconds."
+
+
+
+    #===============================================
+    # HOTKEYS
+    #==========================================
+
+
+    elif intent == "press_key":
+
+        press_key(value)
+
+        return f"Pressing {value}."
+
+    elif intent == "hotkey":
+
+        hotkey(value)
+
+        return f"Pressing {' + '.join(value)}."
+
+
+    #================================================
+    # oprn file  downlaods
+    #==============================================
+
+
+    elif intent == "open_found_file":
+
+        if open_found_file(value):
+
+            return f"Opening {value}."
+
+        return f"I couldn't find {value}."
+
+    elif intent == "open_found_folder":
+
+        if open_found_folder(value):
+
+            return f"Opening {value} folder."
+
+        return f"I couldn't find the {value} folder."
+
+
+
+
+    # #=================================================
+    # FOCUS APP ===============
+    #======================================================
+
+
+    elif intent == "focus_app":
+
+        if focus_app(value):
+
+            return f"Switching to {value}."
+
+        return f"I couldn't find {value} running."
+
+
+    #=====================================================
+    # RUNNING APPS
+    #===================================================
+
+    elif intent == "get_running_apps":
+
+        apps = get_running_apps()
+
+        if isinstance(apps, str):
+            return apps
+
+    # Don't make JARVIS speak hundreds of processes.
+    # Show the useful application/process names in the terminal.
+        print("Running applications:")
+
+
+        for app in apps:
+            print(app)
+
+        return f"I found {len(apps)} running processes. I've listed them in the console."
+
+
+    elif intent == "check_app_running":
+
+        if is_app_running(value):
+
+            return f"Yes, {value} is running."
+
+        return f"No, {value} is not running."
+
+
+
 
     #============================================================
     # CLIPBOARD

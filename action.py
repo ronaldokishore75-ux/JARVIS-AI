@@ -22,6 +22,382 @@ pytesseract.pytesseract.tesseract_cmd = (
 
 
 
+
+# =========================================================
+# SMART FILE SEARCH
+# =========================================================
+
+def find_file(filename):
+
+    import os
+
+    filename = filename.lower().strip()
+
+    search_roots = [
+        os.path.expanduser("~/Desktop"),
+        os.path.expanduser("~/Documents"),
+        os.path.expanduser("~/Downloads"),
+    ]
+
+    print(f"Searching for file: {filename}")
+
+    for root in search_roots:
+
+        if not os.path.exists(root):
+            continue
+
+        for current_root, dirs, files in os.walk(root):
+
+            for file in files:
+
+                if filename in file.lower():
+
+                    full_path = os.path.join(
+                        current_root,
+                        file
+                    )
+
+                    print(f"Found: {full_path}")
+
+                    return full_path
+
+    print(f"File not found: {filename}")
+
+    return None
+
+
+
+# =========================================================
+# SMART FOLDER SEARCH
+# =========================================================
+
+def find_folder(folder_name):
+
+    import os
+
+    folder_name = folder_name.lower().strip()
+
+    search_roots = [
+        os.path.expanduser("~/Desktop"),
+        os.path.expanduser("~/Documents"),
+        os.path.expanduser("~/Downloads"),
+        "D:/",
+    ]
+
+    print(f"Searching for folder: {folder_name}")
+
+    for root in search_roots:
+
+        if not os.path.exists(root):
+            continue
+
+        for current_root, dirs, files in os.walk(root):
+
+            # Skip folders we don't want to search
+            dirs[:] = [
+                directory
+                for directory in dirs
+                if directory.lower() not in {
+                    "$recycle.bin",
+                    "system volume information",
+                    "node_modules",
+                    ".git",
+                }
+            ]
+
+            for directory in dirs:
+
+                if folder_name in directory.lower():
+
+                    full_path = os.path.join(
+                        current_root,
+                        directory
+                    )
+
+                    print(f"Found folder: {full_path}")
+
+                    return full_path
+
+    print(f"Folder not found: {folder_name}")
+
+    return None
+
+
+def open_found_folder(folder_name):
+
+    path = find_folder(folder_name)
+
+    if path is None:
+        return False
+
+    print(f"Opening folder: {path}")
+
+    os.startfile(path)
+
+    return True
+
+
+
+
+def open_found_file(filename):
+
+    path = find_file(filename)
+
+    if path is None:
+        return False
+
+    os.startfile(path)
+
+    return True
+
+
+
+# =========================================================
+# KEYBOARD CONTROL
+# =========================================================
+
+def press_key(key):
+
+    print(f"Pressing key: {key}")
+
+    pyautogui.press(key)
+
+
+def hotkey(keys):
+
+    print(f"Pressing hotkey: {' + '.join(keys)}")
+
+    pyautogui.hotkey(*keys)
+
+
+# =========================================================
+# SMART FOCUS / SWITCH APPLICATION
+# =========================================================
+
+def focus_app(app_name):
+
+    import pygetwindow as gw
+    import psutil
+
+    target = app_name.lower().strip()
+
+    # Common spoken names -> Windows process names
+    aliases = {
+        "chrome": ["chrome.exe"],
+        "google chrome": ["chrome.exe"],
+        "brave": ["brave.exe"],
+        "brave browser": ["brave.exe"],
+        "edge": ["msedge.exe"],
+        "microsoft edge": ["msedge.exe"],
+        "notepad": ["notepad.exe"],
+        "calculator": [
+            "calculatorapp.exe",
+            "calc.exe",
+        ],
+        "vs code": ["code.exe"],
+        "vscode": ["code.exe"],
+        "visual studio code": ["code.exe"],
+        "powershell": [
+            "powershell.exe",
+            "pwsh.exe",
+        ],
+        "command prompt": ["cmd.exe"],
+        "cmd": ["cmd.exe"],
+    }
+
+    target_processes = aliases.get(
+        target,
+        [target if target.endswith(".exe") else target + ".exe"]
+    )
+
+    print(f"Looking for application: {target}")
+
+    # ---------------------------------------------------------
+    # 1. Try to find the actual process
+    # ---------------------------------------------------------
+
+    matching_pids = set()
+
+    for process in psutil.process_iter(
+        ["pid", "name"]
+    ):
+
+        try:
+
+            process_name = process.info["name"]
+
+            if not process_name:
+                continue
+
+            process_name = process_name.lower()
+
+            if process_name in target_processes:
+
+                matching_pids.add(
+                    process.info["pid"]
+                )
+
+        except (
+            psutil.NoSuchProcess,
+            psutil.AccessDenied,
+            psutil.ZombieProcess,
+        ):
+            continue
+
+    # ---------------------------------------------------------
+    # 2. Match process to a visible window
+    # ---------------------------------------------------------
+
+    for window in gw.getAllWindows():
+
+        title = window.title.strip()
+
+        if not title:
+            continue
+
+        try:
+
+            # Some pygetwindow versions expose hwnd
+            hwnd = getattr(
+                window,
+                "_hWnd",
+                None
+            )
+
+            if hwnd:
+
+                # Use pywin32 if available
+                try:
+
+                    import win32process
+
+                    _, pid = win32process.GetWindowThreadProcessId(
+                        hwnd
+                    )
+
+                    if pid in matching_pids:
+
+                        if window.isMinimized:
+                            window.restore()
+
+                        window.activate()
+
+                        print(
+                            f"Focused process window: {title}"
+                        )
+
+                        return True
+
+                except ImportError:
+                    pass
+
+        except Exception:
+            pass
+
+    # ---------------------------------------------------------
+    # 3. Fallback: search window title
+    # ---------------------------------------------------------
+
+    for window in gw.getAllWindows():
+
+        title = window.title.strip()
+
+        if not title:
+            continue
+
+        if target in title.lower():
+
+            try:
+
+                if window.isMinimized:
+                    window.restore()
+
+                window.activate()
+
+                print(
+                    f"Focused by title: {title}"
+                )
+
+                return True
+
+            except Exception as error:
+
+                print(
+                    f"Could not focus window: {error}"
+                )
+
+                return False
+
+    print(
+        f"Application not found: {app_name}"
+    )
+
+    return False
+
+
+# =========================================================
+# PROCESS / APP AWARENESS
+# =========================================================
+
+def get_running_apps():
+
+    apps = []
+
+    for process in psutil.process_iter(
+        ["name", "pid"]
+    ):
+
+        try:
+
+            name = process.info["name"]
+
+            if name:
+                apps.append(name)
+
+        except (
+            psutil.NoSuchProcess,
+            psutil.AccessDenied,
+            psutil.ZombieProcess,
+        ):
+            continue
+
+    apps = sorted(set(apps))
+
+    if not apps:
+        return "I couldn't find any running applications."
+
+    return apps
+
+
+def is_app_running(app_name):
+
+    target = app_name.lower().replace(".exe", "")
+
+    for process in psutil.process_iter(["name"]):
+
+        try:
+
+            name = process.info["name"]
+
+            if not name:
+                continue
+
+            name = name.lower().replace(".exe", "")
+
+            if target in name or name in target:
+                return True
+
+        except (
+            psutil.NoSuchProcess,
+            psutil.AccessDenied,
+            psutil.ZombieProcess,
+        ):
+            continue
+
+    return False
+
+
+
 # =========================================================
 # CLIPBOARD CONTROL
 # =========================================================

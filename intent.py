@@ -461,6 +461,234 @@ def detect_intent(command):
 
 
     # =========================================================
+    # KEYBOARD CONTROL
+    # =========================================================
+
+    key_patterns = {
+        "press enter": "enter",
+        "press escape": "esc",
+        "press tab": "tab",
+        "press backspace": "backspace",
+        "press delete": "delete",
+        "press space": "space",
+        "press the enter key": "enter",
+        "press the escape key": "esc",
+        "press the tab key": "tab",
+    }
+
+    for phrase, key in key_patterns.items():
+
+        if command == phrase:
+
+            return "press_key", key
+
+
+    # =========================================================
+    # NATURAL SHORTCUTS
+    # =========================================================
+
+    shortcut_map = {
+        "copy": ["ctrl", "c"],
+        "copy this": ["ctrl", "c"],
+
+        "paste": ["ctrl", "v"],
+        "paste this": ["ctrl", "v"],
+
+        "cut": ["ctrl", "x"],
+        "cut this": ["ctrl", "x"],
+
+        "select all": ["ctrl", "a"],
+
+        "undo": ["ctrl", "z"],
+        "redo": ["ctrl", "y"],
+
+        "save": ["ctrl", "s"],
+        "save this": ["ctrl", "s"],
+
+        "find": ["ctrl", "f"],
+        "new tab": ["ctrl", "t"],
+        "close tab": ["ctrl", "w"],
+    }
+
+    if command in shortcut_map:
+
+        return "hotkey", shortcut_map[command]
+
+
+    # =========================================================
+    # NATURAL KEYBOARD HOTKEYS
+    # =========================================================
+
+    hotkey_patterns = [
+        r"press\s+(.+?)\s+(?:and\s+)?press\s+(.+)",
+        r"hold\s+(.+?)\s+and\s+press\s+(.+)",
+        r"press\s+(.+?)\s+(.+)",
+        r"(.+?)\s+(.+)",
+    ]
+
+    modifier_map = {
+        "control": "ctrl",
+        "ctrl": "ctrl",
+        "shift": "shift",
+        "alt": "alt",
+        "windows": "win",
+        "window": "win",
+        "win": "win",
+    }
+
+    key_map = {
+        "a": "a",
+        "b": "b",
+        "c": "c",
+        "d": "d",
+        "e": "e",
+        "f": "f",
+        "g": "g",
+        "h": "h",
+        "i": "i",
+        "j": "j",
+        "k": "k",
+        "l": "l",
+        "m": "m",
+        "n": "n",
+        "o": "o",
+        "p": "p",
+        "q": "q",
+        "r": "r",
+        "s": "s",
+        "t": "t",
+        "u": "u",
+        "v": "v",
+        "w": "w",
+        "x": "x",
+        "y": "y",
+        "z": "z",
+
+        "enter": "enter",
+        "escape": "esc",
+        "esc": "esc",
+        "tab": "tab",
+        "space": "space",
+        "backspace": "backspace",
+        "delete": "delete",
+        "home": "home",
+        "end": "end",
+        "up": "up",
+        "down": "down",
+        "left": "left",
+        "right": "right",
+    }
+
+    for pattern in hotkey_patterns:
+
+        match = re.fullmatch(pattern, command)
+
+        if not match:
+            continue
+
+        modifier_text = match.group(1).strip()
+        key_text = match.group(2).strip()
+
+        modifier = modifier_map.get(modifier_text)
+        key = key_map.get(key_text)
+
+        if modifier and key:
+
+            return "hotkey", [modifier, key]
+
+
+
+
+    # =========================================================
+    # FIND / OPEN FOLDER
+    # =========================================================
+
+    match = re.fullmatch(
+        r"(?:find|open)\s+(?:my\s+)?(.+?)\s+folder",
+        command
+    )
+
+    if match:
+
+        folder_name = match.group(1).strip()
+
+        return "open_found_folder", folder_name
+
+
+
+        # =========================================================
+    # FIND / OPEN FILE
+    # =========================================================
+
+    match = re.fullmatch(
+        r"(?:find|open)\s+(?:my\s+)?(.+)",
+        command
+    )
+
+    if match:
+
+        filename = match.group(1).strip()
+
+        return "open_found_file", filename
+
+
+
+
+
+    # =========================================================
+    # FOCUS / SWITCH APPLICATION
+    # =========================================================
+
+    focus_patterns = [
+        r"switch to (.+)",
+        r"focus (?:on )?(.+)",
+        r"bring (.+) to the front",
+        r"bring (?:the )?(.+) to the front",
+    ]
+
+    for pattern in focus_patterns:
+
+        match = re.fullmatch(pattern, command)
+
+        if match:
+
+            app_name = match.group(1).strip()
+
+            return "focus_app", app_name
+
+
+    # =========================================================
+    # RUNNING APPS
+    # =========================================================
+
+    if command in [
+        "what apps are running",
+        "what applications are running",
+        "show running apps",
+        "show running applications",
+        "what is running",
+    ]:
+        return "get_running_apps", None
+
+
+    # =========================================================
+    # CHECK APP
+    # =========================================================
+
+    match = re.fullmatch(
+        r"(?:is|is the|check if)\s+(.+?)\s+(?:running|open)",
+        command
+    )
+
+    if match:
+
+        app_name = match.group(1).strip()
+
+        return "check_app_running", app_name
+
+
+
+    # =========================================================
     # CLIPBOARD
     # =========================================================
 
