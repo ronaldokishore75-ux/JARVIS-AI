@@ -1,6 +1,12 @@
 from brain import jarvis_response
+
 from whisper_ai import listen
 from voice import speak, stop_speaking
+
+from task_manager import is_task_running
+from task_runner import request_task_cancel
+
+
 import string
 
 
@@ -190,11 +196,43 @@ while True:
         # SEND EVERYTHING ELSE TO BRAIN
         # =================================================
 
-        response = jarvis_response(command)
+        # =================================================
+        # V5 TASK CONTROL
+        # =================================================
+        # =================================================
+        # V5 LIVE TASK CANCELLATION
+        # =================================================
+
+        if is_task_running() and command in [
+            "stop task",
+            "stop the task",
+            "cancel task",
+            "cancel the task",
+            "stop this task",
+            "cancel this task",
+            "abort task",
+            "abort the task",
+        ]:
+
+            print("🛑 V5 TASK CANCELLATION RECEIVED.")
+
+            request_task_cancel()
+
+            response = "Cancelling the task."
 
 
-        # =================================================
-        # SPEAK RESPONSE
-        # =================================================
+        else:
+
+            # Normal commands always go to the brain
+            print("🧠 Sending command to brain...")
+
+            response = jarvis_response(command)
+
+            print("🧠 Brain response:", repr(response))
+
+
+            # =================================================
+            # SPEAK RESPONSE
+            # =================================================
 
         speak(response)
