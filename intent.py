@@ -16,6 +16,222 @@ def detect_intent(command):
 
 
     # =========================================================
+    # OPEN YOUTUBE
+    # =========================================================
+
+    youtube_open_patterns = [
+        r"open\s+(?:the\s+)?youtube",
+        r"launch\s+(?:the\s+)?youtube",
+        r"start\s+(?:the\s+)?youtube",
+        r"bring\s+up\s+(?:the\s+)?youtube",
+    ]
+
+    for pattern in youtube_open_patterns:
+        if re.fullmatch(pattern, command):
+            return "open_youtube", None
+
+
+    # =========================================================
+    # YOUTUBE SEARCH
+    # =========================================================
+    
+    youtube_search_patterns = [
+        r"search youtube for (.+)",
+        r"search youtube (.+)",
+        r"search for (.+) on youtube",
+        r"find (.+) on youtube",
+        r"youtube (.+)",
+    ]
+    
+    for pattern in youtube_search_patterns:
+    
+        match = re.fullmatch(pattern, command)
+    
+        if match:
+    
+            query = match.group(1).strip()
+    
+            if query:
+                return "search_youtube", query
+
+
+    # =========================================================
+    # OPEN GOOGLE
+    # =========================================================
+
+    google_open_patterns = [
+        r"open\s+(?:the\s+)?google",
+        r"launch\s+(?:the\s+)?google",
+        r"start\s+(?:the\s+)?google",
+        r"bring\s+up\s+(?:the\s+)?google",
+    ]
+
+    for pattern in google_open_patterns:
+        if re.fullmatch(pattern, command):
+            return "open_google", None
+
+
+    # =========================================================
+    # GOOGLE SEARCH
+    # =========================================================
+
+    google_search_patterns = [
+        r"search google for (.+)",
+        r"search google (.+)",
+        r"search for (.+) on google",
+        r"find (.+) on google",
+        r"google (.+)",
+    ]
+
+    for pattern in google_search_patterns:
+
+        match = re.fullmatch(pattern, command)
+
+        if match:
+
+            query = match.group(1).strip()
+
+            if query:
+                return "search_google", query
+
+
+
+
+    # =========================================================
+    # V5 TASK STATUS
+    # =========================================================
+
+    task_status_commands = {
+        "task status",
+        "what is the task status",
+        "what's the task status",
+        "is the task finished",
+        "is the task done",
+        "what task are you doing",
+        "what are you doing",
+        "what step are you on",
+     "which step are you on",
+    }
+
+    if command in task_status_commands:
+
+        return "task_status", None
+
+
+
+    # =========================================================
+    # CANCEL CURRENT TASK
+    # =========================================================
+
+    if command in [
+        "stop task",
+        "stop the task",
+        "cancel task",
+        "cancel the task",
+        "stop this task",
+        "cancel this task",
+        "abort task",
+        "abort the task",
+    ]:
+        return "cancel_task", None
+
+
+
+
+
+
+    # =========================================================
+    # OPEN NOTEPAD
+    # =========================================================
+
+    notepad_open_patterns = [
+        r"open\s+(?:the\s+)?notepad",
+        r"launch\s+(?:the\s+)?notepad",
+        r"start\s+(?:the\s+)?notepad",
+        r"bring\s+up\s+(?:the\s+)?notepad",
+        r"open\s+my\s+notepad",
+    ]
+
+    for pattern in notepad_open_patterns:
+        if re.fullmatch(pattern, command):
+            return "open_notepad", None
+
+
+    
+
+    # =========================================================
+    # CLOSE NOTEPAD
+    # =========================================================
+
+    notepad_close_patterns = [
+        r"close\s+(?:the\s+)?notepad",
+        r"exit\s+(?:the\s+)?notepad",
+        r"quit\s+(?:the\s+)?notepad",
+    ]
+
+    for pattern in notepad_close_patterns:
+        if re.fullmatch(pattern, command):
+            return "close_notepad", None
+
+
+
+    # =========================================================
+    # OPEN CALCULATOR
+    # =========================================================
+
+    calculator_open_patterns = [
+        r"open\s+(?:the\s+)?calculator",
+        r"open\s+(?:the\s+)?calc",
+        r"launch\s+(?:the\s+)?calculator",
+        r"start\s+(?:the\s+)?calculator",
+        r"bring\s+up\s+(?:the\s+)?calculator",
+        r"open\s+my\s+calculator",
+    ]
+
+    for pattern in calculator_open_patterns:
+        if re.fullmatch(pattern, command):
+            return "open_calculator", None
+
+
+
+    # =========================================================
+    # CLOSE CALCULATOR
+    # =========================================================
+
+    calculator_close_patterns = [
+        r"close\s+(?:the\s+)?calculator",
+        r"close\s+(?:the\s+)?calc",
+        r"exit\s+(?:the\s+)?calculator",
+        r"quit\s+(?:the\s+)?calculator",
+    ]
+
+    for pattern in calculator_close_patterns:
+        if re.fullmatch(pattern, command):
+            return "close_calculator", None
+
+
+    # =========================================================
+    # OPEN VS CODE
+    # =========================================================
+
+    vscode_patterns = [
+        r"open\s+vscode",
+        r"open\s+vs\s+code",
+        r"open\s+(?:visual\s+studio\s+code)",
+        r"launch\s+vscode",
+        r"launch\s+vs\s+code",
+        r"start\s+vscode",
+        r"start\s+vs\s+code",
+    ]
+
+    for pattern in vscode_patterns:
+        if re.fullmatch(pattern, command):
+            return "open_vscode", None
+
+
+
+
+    # =========================================================
     # TIMER
     # =========================================================
 
@@ -1247,89 +1463,12 @@ def detect_intent(command):
 
 
 
-    # =========================================================
-    # OPEN GOOGLE
-    # =========================================================
-
-    google_open_patterns = [
-        r"open\s+(?:the\s+)?google",
-        r"launch\s+(?:the\s+)?google",
-        r"start\s+(?:the\s+)?google",
-        r"bring\s+up\s+(?:the\s+)?google",
-    ]
-
-    for pattern in google_open_patterns:
-        if re.fullmatch(pattern, command):
-            return "open_google", None
-
-    # =========================================================
-    # OPEN YOUTUBE
-    # =========================================================
-
-    youtube_open_patterns = [
-        r"open\s+(?:the\s+)?youtube",
-        r"launch\s+(?:the\s+)?youtube",
-        r"start\s+(?:the\s+)?youtube",
-        r"bring\s+up\s+(?:the\s+)?youtube",
-    ]
-
-    for pattern in youtube_open_patterns:
-        if re.fullmatch(pattern, command):
-            return "open_youtube", None
 
 
 
 
-    # =========================================================
-    # OPEN NOTEPAD
-    # =========================================================
 
-    notepad_open_patterns = [
-        r"open\s+(?:the\s+)?notepad",
-        r"launch\s+(?:the\s+)?notepad",
-        r"start\s+(?:the\s+)?notepad",
-        r"bring\s+up\s+(?:the\s+)?notepad",
-        r"open\s+my\s+notepad",
-    ]
 
-    for pattern in notepad_open_patterns:
-        if re.fullmatch(pattern, command):
-            return "open_notepad", None
-
-    # =========================================================
-    # OPEN CALCULATOR
-    # =========================================================
-
-    calculator_open_patterns = [
-        r"open\s+(?:the\s+)?calculator",
-        r"open\s+(?:the\s+)?calc",
-        r"launch\s+(?:the\s+)?calculator",
-        r"start\s+(?:the\s+)?calculator",
-        r"bring\s+up\s+(?:the\s+)?calculator",
-        r"open\s+my\s+calculator",
-    ]
-
-    for pattern in calculator_open_patterns:
-        if re.fullmatch(pattern, command):
-            return "open_calculator", None
-
-    # =========================================================
-    # OPEN VS CODE
-    # =========================================================
-
-    vscode_patterns = [
-        r"open\s+vscode",
-        r"open\s+vs\s+code",
-        r"open\s+(?:visual\s+studio\s+code)",
-        r"launch\s+vscode",
-        r"launch\s+vs\s+code",
-        r"start\s+vscode",
-        r"start\s+vs\s+code",
-    ]
-
-    for pattern in vscode_patterns:
-        if re.fullmatch(pattern, command):
-            return "open_vscode", None
 
     # =========================================================
     # OPEN FILE EXPLORER
@@ -1417,80 +1556,11 @@ def detect_intent(command):
     ):
         return "open_jarvis_vscode", None
 
-    # =========================================================
-    # GOOGLE SEARCH
-    # =========================================================
 
-    google_search_patterns = [
-        r"search google for (.+)",
-        r"search google (.+)",
-        r"search for (.+) on google",
-        r"find (.+) on google",
-        r"google (.+)",
-    ]
+    
 
-    for pattern in google_search_patterns:
 
-        match = re.fullmatch(pattern, command)
 
-        if match:
-
-            query = match.group(1).strip()
-
-            if query:
-                return "search_google", query
-
-    # =========================================================
-    # YOUTUBE SEARCH
-    # =========================================================
-
-    youtube_search_patterns = [
-        r"search youtube for (.+)",
-        r"search youtube (.+)",
-        r"search for (.+) on youtube",
-        r"find (.+) on youtube",
-        r"youtube (.+)",
-    ]
-
-    for pattern in youtube_search_patterns:
-
-        match = re.fullmatch(pattern, command)
-
-        if match:
-
-            query = match.group(1).strip()
-
-            if query:
-                return "search_youtube", query
-
-    # =========================================================
-    # CLOSE NOTEPAD
-    # =========================================================
-
-    notepad_close_patterns = [
-        r"close\s+(?:the\s+)?notepad",
-        r"exit\s+(?:the\s+)?notepad",
-        r"quit\s+(?:the\s+)?notepad",
-    ]
-
-    for pattern in notepad_close_patterns:
-        if re.fullmatch(pattern, command):
-            return "close_notepad", None
-
-    # =========================================================
-    # CLOSE CALCULATOR
-    # =========================================================
-
-    calculator_close_patterns = [
-        r"close\s+(?:the\s+)?calculator",
-        r"close\s+(?:the\s+)?calc",
-        r"exit\s+(?:the\s+)?calculator",
-        r"quit\s+(?:the\s+)?calculator",
-    ]
-
-    for pattern in calculator_close_patterns:
-        if re.fullmatch(pattern, command):
-            return "close_calculator", None
 
     # =========================================================
     # NOTHING FOUND

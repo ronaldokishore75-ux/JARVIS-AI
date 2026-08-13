@@ -695,6 +695,11 @@ def click_link_by_name(link_name):
 
     print(f"Looking for: {link_name}")
 
+    # ---------------------------------------------------------
+    # Bring the JARVIS browser to the front
+    # ---------------------------------------------------------
+
+
     max_scroll_attempts = 5
 
     for attempt in range(max_scroll_attempts + 1):
@@ -704,7 +709,105 @@ def click_link_by_name(link_name):
             f"{attempt + 1}/{max_scroll_attempts + 1}"
         )
 
-        screenshot = pyautogui.screenshot()
+        # -----------------------------------------------------
+        # Find the browser window
+        # -----------------------------------------------------
+
+        try:
+
+            import pygetwindow as gw
+
+            browser_window = None
+
+            for window in gw.getAllWindows():
+
+                title = window.title.lower().strip()
+
+                if (
+                    "youtube" in title
+                    or "google chrome" in title
+                    or "chromium" in title
+                ):
+
+                    if (
+                        window.width > 500
+                        and window.height > 400
+                    ):
+
+                        browser_window = window
+                        break
+
+            if browser_window is None:
+
+                print(
+                    "Could not locate browser window."
+                )
+
+                return False
+
+        except Exception as error:
+
+            print(
+                f"Could not inspect browser window: {error}"
+            )
+
+            return False
+
+        # -----------------------------------------------------
+        # Make sure browser is active
+        # -----------------------------------------------------
+
+        try:
+
+            if browser_window.isMinimized:
+                browser_window.restore()
+
+            browser_window.activate()
+
+            time.sleep(0.5)
+
+        except Exception as error:
+
+            print(
+                f"Could not activate browser: {error}"
+            )
+
+            return False
+
+        # -----------------------------------------------------
+        # Browser window coordinates
+        # -----------------------------------------------------
+
+        window_left = browser_window.left
+        window_top = browser_window.top
+        window_width = browser_window.width
+        window_height = browser_window.height
+
+        # Skip browser title bar / tabs / toolbar
+        toolbar_height = 120
+
+        if window_height <= toolbar_height:
+
+            print("Browser window is too small.")
+
+            return False
+
+        # -----------------------------------------------------
+        # Screenshot ONLY browser content area
+        # -----------------------------------------------------
+
+        screenshot = pyautogui.screenshot(
+            region=(
+                window_left,
+                window_top + toolbar_height,
+                window_width,
+                window_height - toolbar_height
+            )
+        )
+
+        # -----------------------------------------------------
+        # OCR
+        # -----------------------------------------------------
 
         data = pytesseract.image_to_data(
             screenshot,
@@ -716,6 +819,10 @@ def click_link_by_name(link_name):
         )
 
         lines = {}
+
+        # -----------------------------------------------------
+        # Group OCR words into lines
+        # -----------------------------------------------------
 
         for i, text in enumerate(data["text"]):
 
@@ -758,6 +865,10 @@ def click_link_by_name(link_name):
                 data["top"][i] + data["height"][i]
             )
 
+        # -----------------------------------------------------
+        # Find best matching line
+        # -----------------------------------------------------
+
         best_match = None
         best_score = 0
 
@@ -776,19 +887,41 @@ def click_link_by_name(link_name):
                 best_score = score
                 best_match = line
 
-        # ---------------------------------------------
+        # -----------------------------------------------------
         # MATCH FOUND
-        # ---------------------------------------------
+        # -----------------------------------------------------
 
         if best_match and best_score > 0:
 
-            left = min(best_match["left"])
-            top = min(best_match["top"])
-            right = max(best_match["right"])
-            bottom = max(best_match["bottom"])
+            # OCR coordinates are relative to the cropped image
+            text_left = min(
+                best_match["left"]
+            )
 
-            click_x = (left + right) // 2
-            click_y = (top + bottom) // 2
+            text_top = min(
+                best_match["top"]
+            )
+
+            text_right = max(
+                best_match["right"]
+            )
+
+            text_bottom = max(
+                best_match["bottom"]
+            )
+
+            # Convert cropped screenshot coordinates
+            # back to actual screen coordinates
+            click_x = (
+                window_left
+                + (text_left + text_right) // 2
+            )
+
+            click_y = (
+                window_top
+                + toolbar_height
+                + (text_top + text_bottom) // 2
+            )
 
             found_text = " ".join(
                 best_match["words"]
@@ -817,9 +950,9 @@ def click_link_by_name(link_name):
 
             return True
 
-        # ---------------------------------------------
+        # -----------------------------------------------------
         # NOT FOUND — SCROLL
-        # ---------------------------------------------
+        # -----------------------------------------------------
 
         if attempt < max_scroll_attempts:
 

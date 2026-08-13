@@ -2,6 +2,7 @@ from datetime import datetime
 import re
 
 from intent import detect_intent
+from task_runner import request_task_cancel
 
 
 from memory import load_memory, save_memory
@@ -99,15 +100,131 @@ from action import (
 
 
 
+
 )
 
 pending_action = None
 
-def jarvis_response(command):
+
+
+def task_progress(event, step, total, description):
+
+    if event == "step_started":
+
+        print(
+            f"V5 PROGRESS: Step {step}/{total}: "
+            f"{description}"
+        )
+
+    elif event == "step_completed":
+
+        print(
+            f"V5 PROGRESS: Completed "
+            f"{step}/{total}: {description}"
+        )
+
+    elif event == "completed":
+
+        print(
+            "V5 PROGRESS: Task completed."
+        )
+
+    elif event == "cancelled":
+
+        print(
+            "V5 PROGRESS: Task cancelled."
+        )
+
+    elif event == "failed":
+
+        print(
+            f"V5 PROGRESS: Task failed at "
+            f"step {step}/{total}."
+        )
+
+
+
+def _rebuild_step_command(action, value):
+
+    if action == "open_youtube":
+        return "open youtube"
+
+    if action == "search_youtube":
+        return (
+            f"search youtube for {value}"
+        )
+
+    if action == "scroll_down":
+        return "scroll down"
+
+    if action == "click_link":
+        return f"click {value}"
+
+    return action
+
+def jarvis_response(command, _task_step=False):
+
 
     global pending_action
     
     command = command.lower().strip()
+
+    # =========================================================
+    # CANCEL V5 TASK
+    # =========================================================
+
+    cancel_intent, cancel_value = detect_intent(command)
+
+    if cancel_intent == "cancel_task":
+
+        from task_runner import request_task_cancel
+
+        request_task_cancel()
+
+        return "Cancelling the current task."
+
+
+
+    # =========================================================
+    # V5 LIVE TASK ENGINE
+    # =========================================================
+
+    if not _task_step:
+
+        
+        from task_manager import start_task
+
+        # Use planner to decide whether this is a multi-step task
+        from planner import create_plan
+
+        plan = create_plan(command)
+
+        if len(plan.steps) > 1:
+
+            started = start_task(
+                command,
+                lambda action, value:
+                    jarvis_response(
+                        _rebuild_step_command(
+                            action,
+                            value
+                        ),
+                        _task_step=True
+                    ),
+                task_progress
+            )
+
+
+            if started:
+
+                return "Starting the task."
+
+            return (
+                "A task is already running. "
+                "Say stop task to cancel it."
+            )
+
+
 
     memory = load_memory()
 
@@ -212,6 +329,57 @@ def jarvis_response(command):
         search_youtube(value)
 
         return f"Searching YouTube for {value}."
+
+    elif intent == "task_status":
+
+
+        from task_state import task_state
+
+        state = task_state.get_state()
+
+        if state["status"] == "IDLE":
+
+            return "There is no active task."
+
+        if state["status"] == "RUNNING":
+
+            return (
+                f"Task is running. "
+                f"Step {state['current_step']} "
+                f"of {state['total_steps']}. "
+                f"Current action: "
+                f"{state['current_action']}."
+            )
+
+        if state["status"] == "COMPLETED":
+
+            return (
+                f"The task is completed. "
+                f"It finished all "
+                f"{state['total_steps']} steps."
+            )
+
+        if state["status"] == "CANCELLED":
+
+            return (
+                f"The task was cancelled at "
+                f"step {state['current_step']} "
+                f"of {state['total_steps']}."
+            )
+
+        if state["status"] == "FAILED":
+
+            return (
+                f"The task failed at "
+                f"step {state['current_step']} "
+                f"of {state['total_steps']}. "
+                f"Reason: {state['error']}."
+            )
+
+        return (
+            f"Task status is "
+            f"{state['status']}."
+        )
 
 
     elif intent == "browser_search":
@@ -553,9 +721,12 @@ def jarvis_response(command):
 
     elif intent == "click_link":
 
-        click_link_by_name(value)
+        success = click_link_by_name(value)
 
-        return f"Clicking {value}."
+        if success:
+            return f"Clicking {value}."
+
+        return f"I couldn't find {value}."
 
     elif intent == "skip_ad":
 
