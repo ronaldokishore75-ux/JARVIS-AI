@@ -31,4 +31,11 @@ test_*.py
 
 brain_test_tools.py
 
+vector_store.json
+test_vector_store.json
+
 jarvis_browser_profile/
+
+test_knowledge.txt
+
+knowledge_tests/

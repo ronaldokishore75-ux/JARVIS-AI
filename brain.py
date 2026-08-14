@@ -207,6 +207,43 @@ def try_v3_tool_call(command):
 
         return None
 
+# =========================================================
+# V4 RAG FALLBACK
+# =========================================================
+
+def try_rag_answer(command):
+
+    try:
+
+        from rag_answer import answer_with_rag
+
+        response = answer_with_rag(
+            command
+        )
+
+        if response:
+
+            print(
+                "V4 RAG: Relevant knowledge found."
+            )
+
+            return response
+
+        print(
+            "V4 RAG: No sufficiently relevant knowledge."
+        )
+
+        return None
+
+    except Exception as error:
+
+        print(
+            f"V4 RAG ERROR: {error}"
+        )
+
+        return None
+
+
 
 def jarvis_response(command, _task_step=False):
 
@@ -1694,15 +1731,38 @@ def jarvis_response(command, _task_step=False):
 
 
     # =========================================================
-# V3 TOOL CALLING FALLBACK
-# =========================================================
+    # V4 RAG FALLBACK
+    # =========================================================
+
+    rag_response = try_rag_answer(
+
+        command
+    )
+
+    if rag_response:
+        return rag_response
+
+
+
+
+
+
+    # =========================================================
+    # V3 TOOL CALLING FALLBACK
+    # =========================================================
 
     tool_response = try_v3_tool_call(
+
         command
     )
 
     if tool_response:
-
         return tool_response
+
+
+
+    # =========================================================
+    # NORMAL GEMINI FALLBACK
+    # =========================================================
 
     return ask_ai(command)
