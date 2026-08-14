@@ -5,7 +5,7 @@ voice.wav
 memory.json
 # Python cache
 __pycache__/
-*.pyc
+*.pycgit
 
 # Audio recordings
 *.wav
@@ -18,3 +18,17 @@ stop_check.wav
 
 # Local voice/device testing
 voice_list.py
+
+# JARVIS browser profile
+jarvis_browser_profile/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local test files
+test_*.py
+
+brain_test_tools.py
+
+jarvis_browser_profile/
