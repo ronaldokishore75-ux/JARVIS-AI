@@ -760,39 +760,8 @@ V6 — Local LLM Support
 
 ---
 
-# Security Notes
 
-Never commit the following to the repository:
 
-```text
-.env
-API keys
-credentials
-browser profiles
-local vector-store data
-temporary audio files
-generated caches
-Python __pycache__ files
-local test artifacts
-```
-
-Use `.gitignore` to keep local runtime data and secrets out of version control.
-
----
-
-# License
-
-Add your preferred license here.
-
-For example:
-
-```text
-MIT License
-```
-
-or replace this section with the license you choose for the project.
-
----
 
 # Acknowledgements
 
