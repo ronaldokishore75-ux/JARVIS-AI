@@ -1397,6 +1397,12 @@ def unmute_volume():
 
 def set_volume(percent):
 
+    print(
+        "DEBUG set_volume percent:",
+        repr(percent),
+        type(percent)
+    )
+
     volume = get_volume_controller()
 
     percent = max(0, min(percent, 100))

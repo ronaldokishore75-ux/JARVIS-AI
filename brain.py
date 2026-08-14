@@ -4,6 +4,8 @@ import re
 from intent import detect_intent
 from task_runner import request_task_cancel
 
+from gemini_tools import run_tool_call_cycle
+
 
 from memory import load_memory, save_memory
 from ai import ask_ai
@@ -161,6 +163,50 @@ def _rebuild_step_command(action, value):
         return f"click {value}"
 
     return action
+
+
+
+# =========================================================
+# V3 GEMINI TOOL CALLING
+# =========================================================
+
+def try_v3_tool_call(command):
+
+    try:
+
+        result = run_tool_call_cycle(
+            command
+        )
+
+        tool_calls = result.get(
+            "tool_calls",
+            []
+        )
+
+        # No tool was selected
+        if not tool_calls:
+
+            return None
+
+        response = result.get(
+            "response",
+            ""
+        )
+
+        if response:
+
+            return response
+
+        return "Tool execution completed."
+
+    except Exception as error:
+
+        print(
+            f"V3 TOOL ERROR: {error}"
+        )
+
+        return None
+
 
 def jarvis_response(command, _task_step=False):
 
@@ -1645,5 +1691,18 @@ def jarvis_response(command, _task_step=False):
     #
     # Only unknown commands/questions reach Gemini.
     # =========================================================
+
+
+    # =========================================================
+# V3 TOOL CALLING FALLBACK
+# =========================================================
+
+    tool_response = try_v3_tool_call(
+        command
+    )
+
+    if tool_response:
+
+        return tool_response
 
     return ask_ai(command)

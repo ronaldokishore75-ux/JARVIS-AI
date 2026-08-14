@@ -1,19 +1,34 @@
+# =========================================================
+# JARVIS V5 - LIVE TASK MANAGER
+# =========================================================
+
 import threading
+
 from task_runner import run_task
 
-_task_thread=None
-_task_running=None
+
+_task_thread = None
+_task_running = False
 
 
+# =========================================================
+# START TASK
+# =========================================================
 
-def start_task(command, execute_step, progress_callback=None):
+def start_task(
+    command,
+    execute_step,
+    progress_callback=None
+):
 
     global _task_thread
     global _task_running
 
     if _task_running:
 
-        print("V5 TASK: A task is already running.")
+        print(
+            "V5 TASK: A task is already running."
+        )
 
         return False
 
@@ -31,9 +46,12 @@ def start_task(command, execute_step, progress_callback=None):
                 progress_callback
             )
 
-            print("V5 TASK RESULTS:")
+            print(
+                "V5 TASK RESULTS:"
+            )
 
             for result in results:
+
                 print(result)
 
         except Exception as error:
@@ -50,11 +68,22 @@ def start_task(command, execute_step, progress_callback=None):
                 "V5 TASK: Finished."
             )
 
+
     _task_thread = threading.Thread(
         target=worker,
+        name="JarvisV5TaskThread",
         daemon=True
     )
 
     _task_thread.start()
 
     return True
+
+
+# =========================================================
+# CHECK WHETHER A TASK IS RUNNING
+# =========================================================
+
+def is_task_running():
+
+    return _task_running
