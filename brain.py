@@ -1745,6 +1745,18 @@ def jarvis_response(command, _task_step=False):
 
 
 
+    # =========================================================
+    # V7 MCP TOOL CALLING
+    # =========================================================
+
+    from mcp_integration import try_mcp_tool_call
+
+    mcp_response = try_mcp_tool_call(
+        command
+    )
+
+    if mcp_response:
+        return mcp_response
 
 
     # =========================================================
@@ -1752,7 +1764,6 @@ def jarvis_response(command, _task_step=False):
     # =========================================================
 
     tool_response = try_v3_tool_call(
-
         command
     )
 
@@ -1760,10 +1771,12 @@ def jarvis_response(command, _task_step=False):
         return tool_response
 
 
-
     # =========================================================
-    # NORMAL GEMINI FALLBACK
+    # NORMAL MODEL FALLBACK
     # =========================================================
 
     from model_provider import ask_model
-    return ask_model(command)
+
+    return ask_model(
+        command
+    )
