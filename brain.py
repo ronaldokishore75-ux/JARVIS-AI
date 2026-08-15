@@ -1765,4 +1765,5 @@ def jarvis_response(command, _task_step=False):
     # NORMAL GEMINI FALLBACK
     # =========================================================
 
-    return ask_ai(command)
+    from model_provider import ask_model
+    return ask_model(command)
