@@ -705,6 +705,34 @@ These tests cover:
 
 ---
 
+
+# FOR V7 - MCO INTEGRATION
+
+
+JARVIS supports the Model Context Protocol (MCP) through a dedicated client, stdio-based MCP server communication, dynamic tool discovery, schema normalization, MCP tool execution, and unified routing alongside native V3 tools.
+
+The V7 pipeline is:
+
+MCP Server
+    ↓
+MCP Client
+    ↓
+Tool Discovery
+    ↓
+Schema Normalization
+    ↓
+Unified Tool Registry
+    ↓
+Tool Selection
+    ↓
+Unified Executor
+    ├── Native V3 Tools
+    └── MCP Tools
+
+
+
+
+
 # Development Philosophy
 
 JARVIS is developed incrementally.
@@ -728,14 +756,13 @@ The goal is to allow future components such as local language models, MCP integr
 
 # Roadmap
 
-```text
 V1  ✅ Voice pipeline
 V2  ✅ Modular architecture + computer actions + interrupts + memory
 V3  ✅ LLM tool/function calling
 V4  ✅ RAG + embeddings + vector database
 V5  ✅ Agent planning + multi-step execution
-V6  ⏳ Ollama / local LLM support
-V7  ⏳ MCP integration
+V6  ✅ Ollama / local LLM support + provider fallback
+V7  ✅ MCP integration + unified tool routing
 V8  ⏳ Advanced memory + evaluation + observability
 V9  ⏳ Docker / deployment + polished UI
 ```
@@ -744,18 +771,19 @@ V9  ⏳ Docker / deployment + polished UI
 
 # Current Status
 
+# Current Status
+
 JARVIS currently has working implementations for:
 
-```text
-V3  Tool Calling
-V4  Retrieval-Augmented Generation
-V5  Agent Planning
-```
+- V3 — Tool Calling
+- V4 — Retrieval-Augmented Generation
+- V5 — Agent Planning and Multi-Step Execution
+- V6 — Local LLM Support with Ollama and Gemini Fallback
+- V7 — MCP Integration and Unified Tool Routing
 
 The next major development milestone is:
 
-```text
-V6 — Local LLM Support
+V8 — Advanced Memory, Evaluation, and Observability
 ```
 
 ---
