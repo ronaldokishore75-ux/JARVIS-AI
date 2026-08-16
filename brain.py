@@ -4,6 +4,7 @@ from memory_integration import try_memory_answer
 from intent import detect_intent
 from task_runner import request_task_cancel
 
+
 from gemini_tools import run_tool_call_cycle
 
 from memory_write_integration import (
@@ -107,10 +108,27 @@ from action import (
 
 
 
-
 )
 
+from brain_context_state import (
+    update_from_brain_action,
+)
+
+
+
+
+from brain_context_integration import BrainContextIntegration
+
 pending_action = None
+
+
+# =========================================================
+# V9 CONVERSATION CONTEXT
+# =========================================================
+
+context_integration = BrainContextIntegration(
+    "context.json"
+)
 
 
 
@@ -168,6 +186,8 @@ def _rebuild_step_command(action, value):
         return f"click {value}"
 
     return action
+
+
 
 
 
@@ -313,6 +333,21 @@ def jarvis_response(command, _task_step=False):
             )
 
 
+    # =========================================================
+    # V9 CONTEXTUAL COMMAND
+    # =========================================================
+
+    context_result = (
+        context_integration.try_context_command(
+            command
+        )
+    )
+
+    if context_result:
+
+        return context_result["message"]
+
+    
 
     memory = load_memory()
 
@@ -402,6 +437,12 @@ def jarvis_response(command, _task_step=False):
 
         open_youtube()
 
+        update_from_brain_action(
+            context_integration,
+            "open_youtube",
+            success=True,
+        )        
+
         return "Opening YouTube."
 
 
@@ -416,6 +457,14 @@ def jarvis_response(command, _task_step=False):
 
         search_youtube(value)
 
+
+        update_from_brain_action(
+            context_integration,
+            "search_youtube",
+            success=True,
+
+        )
+        
         return f"Searching YouTube for {value}."
 
     elif intent == "task_status":
