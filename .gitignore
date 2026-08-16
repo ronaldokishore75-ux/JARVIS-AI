@@ -39,3 +39,13 @@ jarvis_browser_profile/
 test_knowledge.txt
 
 knowledge_tests/
+
+# JARVIS V8 runtime/generated files
+memory_vectors.json
+observability.jsonl
+observability_test.jsonl
+evaluation_report.txt
+
+# Python cache
+__pycache__/
+*.pyc

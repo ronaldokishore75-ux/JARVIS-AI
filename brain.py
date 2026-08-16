@@ -1,11 +1,16 @@
 from datetime import datetime
 import re
-
+from memory_integration import try_memory_answer
 from intent import detect_intent
 from task_runner import request_task_cancel
 
 from gemini_tools import run_tool_call_cycle
 
+from memory_write_integration import (
+    remember_name,
+    remember_favorite_color,
+    remember_location,
+)
 
 from memory import load_memory, save_memory
 from ai import ask_ai
@@ -1382,57 +1387,79 @@ def jarvis_response(command, _task_step=False):
             1
         ).strip()
 
-        memory["favorite_color"] = color
+        remember_favorite_color(
+            color
 
-        save_memory(memory)
+        )
+
 
         return (
             f"Got it! I'll remember that "
             f"your favorite color is {color}."
         )
 
-    if "what is my favorite color" in command:
+    # =========================================================
+    # V8 MEMORY READ - FAVORITE COLOR
+    # =========================================================
 
-        if "favorite_color" in memory:
+    if (
+        "what is my favorite color" in command
+        or "what's my favorite color" in command
+    ):
 
-            return (
-                f"Your favorite color is "
-                f"{memory['favorite_color']}."
-            )
+
+        memory_response = try_memory_answer(
+            command
+        )
+
+        if memory_response:
+            return memory_response
 
         return "I don't know your favorite color yet."
-
     # =========================================================
-    # LOCATION
+    # LOCATION MEMORY WRITE
     # =========================================================
 
-    if "i live in" in command:
+    location_match = re.fullmatch(
+        r"i\s+live\s+in\s+(.+)",
+        command.strip(),
+    )
 
-        city = command.replace(
-            "i live in",
-            "",
-            1
-        ).strip()
+    if location_match:
 
-        memory["location"] = city
+        city = location_match.group(1).strip()
 
-        save_memory(memory)
+        remember_location(
+            city
+
+        )
+
 
         return (
             f"Got it! I'll remember "
             f"that you live in {city}."
         )
+    # =========================================================
+    #    V8 MEMORY READ - LOCATION
+    # =========================================================
 
-    if "where do i live" in command:
+    if (
+        "where do i live" in command
+        or "which city do i live in" in command
+        or "what city do i live in" in command
+    ):
 
-        if "location" in memory:
 
-            return (
-                f"You live in "
-                f"{memory['location']}."
-            )
+        memory_response = try_memory_answer(
+            command
+        )
+
+        if memory_response:
+            return memory_response
 
         return "I don't know where you live yet."
+
+
 
     # =========================================================
     # NAME
@@ -1446,23 +1473,32 @@ def jarvis_response(command, _task_step=False):
             1
         ).strip()
 
-        memory["name"] = name
+        remember_name(
+            name
 
-        save_memory(memory)
+        )
 
         return (
             f"Nice to meet you, {name}. "
             f"I'll remember your name."
         )
 
-    if "what is my name" in command:
+    # =========================================================
+    # V8 MEMORY READ - NAME
+    # =========================================================
 
-        if "name" in memory:
+    if (
+        "what is my name" in command
+        or "what's my name" in command
+    ):
 
-            return (
-                f"Your name is "
-                f"{memory['name']}."
-            )
+
+        memory_response = try_memory_answer(
+            command
+        )
+
+        if memory_response:
+            return memory_response
 
         return "I don't know your name yet."
 
@@ -1741,6 +1777,25 @@ def jarvis_response(command, _task_step=False):
 
     if rag_response:
         return rag_response
+
+
+    # =========================================================
+    # V8 MEMORY FALLBACK
+    # =========================================================
+
+    memory_response = try_memory_answer(
+        command
+    )
+
+    if memory_response:
+        return memory_response
+
+
+
+
+    
+
+
 
 
 

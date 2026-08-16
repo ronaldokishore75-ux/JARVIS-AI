@@ -5,6 +5,13 @@ def detect_intent(command):
 
     command = command.lower().strip()
 
+
+    command=re.sub(
+        r"[.!?]+$",
+        "",
+        command
+    ).strip()
+
     # =========================================================
     # NOTHING FOUND
     # =========================================================

@@ -126,6 +126,23 @@ class UnifiedToolSelector:
             '"arguments":{}'
         )
 
+        # -------------------------------------------------
+        # Repair missing arguments value
+        # Example:
+        # {"tool":"get_jarvis_status","arguments"}
+        # -------------------------------------------------
+
+        text = text.replace(
+            '"arguments"}',
+            '"arguments":{}}'
+        )   
+
+        text = text.replace(
+            '"arguments"\n}',
+        '"arguments":{}\n}'
+        )
+        
+
         text = text.replace(
             "'arguments{}",
             '"arguments":{}'
